@@ -1,0 +1,13 @@
+# Outputs (figures and summary from extract_analysis.m)
+extract_figures/
+summary_stats.txt
+fig*.png
+
+# MATLAB
+*.asv
+*.m~
+*.autosave
+
+# OS
+.DS_Store
+Thumbs.db
