@@ -32,6 +32,8 @@ n_pc     = 10;
 n_corr_sample = 500;
 frame_px = 2304;
 max_show = 2000;
+dff_neuron_block = 1024;   %% dF/F column chunks; try 512 or 256 if Out of memory
+use_single_trace = true;   %% single for T & dff (~half RAM vs double)
 
 %% Build experiment list
 if batch_mode
@@ -104,78 +106,115 @@ for iExp = 1:numel(exp_list)
     sum_inj_file = fullfile(inj_path, 'M_summary.mat');
 
     fprintf('Loading Baseline frr (T + S)...\n');
-    T_bl = double(h5read(frr_bl_file, '/T'))';
+    if use_single_trace
+        T_bl = single(h5read(frr_bl_file, '/T'))';
+    else
+        T_bl = double(h5read(frr_bl_file, '/T'))';
+    end
     S_bl_ir   = double(h5read(frr_bl_file, '/S/ir'));
     S_bl_jc   = double(h5read(frr_bl_file, '/S/jc'));
     S_bl_data = double(h5read(frr_bl_file, '/S/data'));
 
+    fs_bl = h5read(sum_bl_file, '/framerate');
+    [n_frames_bl, n_neurons_bl] = size(T_bl);
+    dur_bl = n_frames_bl / fs_bl;
+
+    % --- dF/F Baseline: neuron blocks (avoids full F0 + T + dff simultaneously) --
+    fprintf('Computing dF/F (Baseline), blocks of %d neurons...\n', dff_neuron_block);
+    nf = n_frames_bl;
+    win = max(round(nf*0.15), 300);
+    half = floor(win/2);
+    dff_bl = zeros(nf, n_neurons_bl, 'like', T_bl);
+    fmin = cast(0.5, 'like', T_bl);
+    blk = max(1, min(dff_neuron_block, n_neurons_bl));
+    for j1 = 1:blk:n_neurons_bl
+        j2 = min(j1 + blk - 1, n_neurons_bl);
+        Tb = T_bl(:, j1:j2);
+        F0 = nan(nf, j2 - j1 + 1, 'like', Tb);
+        for c = 1:half:nf
+            s = max(1, c - half); e = min(nf, c + half);
+            f0_chunk = prctile(Tb(s:e,:), 8, 1);
+            fe = min(c + half - 1, nf);
+            F0(c:fe,:) = repmat(f0_chunk, fe - c + 1, 1);
+        end
+        for jc = 1:size(F0, 2)
+            col = F0(:, jc); m = isnan(col);
+            if any(m)
+                iv = find(~m);
+                col(m) = interp1(iv, col(iv), find(m), 'nearest', 'extrap');
+                F0(:, jc) = col;
+            end
+        end
+        F0(F0 < fmin) = fmin;
+        dff_bl(:, j1:j2) = (Tb - F0) ./ F0;
+        clear F0 Tb
+    end
+    clear T_bl
+
     fprintf('Loading Injection frr (T + S)...\n');
-    T_inj = double(h5read(frr_inj_file, '/T'))';
+    if use_single_trace
+        T_inj = single(h5read(frr_inj_file, '/T'))';
+    else
+        T_inj = double(h5read(frr_inj_file, '/T'))';
+    end
     S_inj_ir   = double(h5read(frr_inj_file, '/S/ir'));
     S_inj_jc   = double(h5read(frr_inj_file, '/S/jc'));
     S_inj_data = double(h5read(frr_inj_file, '/S/data'));
 
-    fprintf('Loading EXTRACT temporal weights...\n');
-    tw_bl  = double(h5read(ext_bl_file,  '/temporal_weights'))';
-    tw_inj = double(h5read(ext_inj_file, '/temporal_weights'))';
-    sumimg_bl  = h5read(ext_bl_file,  '/info/summary_image')';
-    sumimg_inj = h5read(ext_inj_file, '/info/summary_image')';
-
-    fprintf('Loading framerates...\n');
-    fs_bl  = h5read(sum_bl_file,  '/framerate');
     fs_inj = h5read(sum_inj_file, '/framerate');
-
-    fprintf('Loading cell map images...\n');
-    cellmap_bl  = imread(fullfile(bl_path,  'cell_map.png'));
-    cellmap_inj = imread(fullfile(inj_path, 'cell_map.png'));
-
-    [n_frames_bl,  n_neurons_bl]  = size(T_bl);
     [n_frames_inj, n_neurons_inj] = size(T_inj);
-    dur_bl  = n_frames_bl  / fs_bl;
     dur_inj = n_frames_inj / fs_inj;
 
     fprintf('\n  Baseline:  %d neurons | %d frames | %.2f Hz | %.1f s\n', n_neurons_bl, n_frames_bl, fs_bl, dur_bl);
     fprintf('  Injection: %d neurons | %d frames | %.2f Hz | %.1f s\n\n', n_neurons_inj, n_frames_inj, fs_inj, dur_inj);
 
-    % --- Compute dF/F (inline, 8th percentile rolling baseline) ---------------
-    fprintf('Computing dF/F (Baseline)...\n');
-    nf = n_frames_bl; win = max(round(nf*0.15),300); half = floor(win/2);
-    F0 = nan(size(T_bl));
-    for c = 1:half:nf
-        s = max(1,c-half); e = min(nf,c+half);
-        f0_chunk = prctile(T_bl(s:e,:),8,1);
-        fe = min(c+half-1,nf);
-        F0(c:fe,:) = repmat(f0_chunk, fe-c+1, 1);
+    fprintf('Computing dF/F (Injection), blocks of %d neurons...\n', dff_neuron_block);
+    nf = n_frames_inj;
+    win = max(round(nf*0.15), 300);
+    half = floor(win/2);
+    dff_inj = zeros(nf, n_neurons_inj, 'like', T_inj);
+    fmin = cast(0.5, 'like', T_inj);
+    blk = max(1, min(dff_neuron_block, n_neurons_inj));
+    for j1 = 1:blk:n_neurons_inj
+        j2 = min(j1 + blk - 1, n_neurons_inj);
+        Tb = T_inj(:, j1:j2);
+        F0 = nan(nf, j2 - j1 + 1, 'like', Tb);
+        for c = 1:half:nf
+            s = max(1, c - half); e = min(nf, c + half);
+            f0_chunk = prctile(Tb(s:e,:), 8, 1);
+            fe = min(c + half - 1, nf);
+            F0(c:fe,:) = repmat(f0_chunk, fe - c + 1, 1);
+        end
+        for jc = 1:size(F0, 2)
+            col = F0(:, jc); m = isnan(col);
+            if any(m)
+                iv = find(~m);
+                col(m) = interp1(iv, col(iv), find(m), 'nearest', 'extrap');
+                F0(:, jc) = col;
+            end
+        end
+        F0(F0 < fmin) = fmin;
+        dff_inj(:, j1:j2) = (Tb - F0) ./ F0;
+        clear F0 Tb
     end
-    for j = 1:size(F0,2)
-        col = F0(:,j); m = isnan(col);
-        if any(m), iv = find(~m); col(m) = interp1(iv,col(iv),find(m),'nearest','extrap'); F0(:,j) = col; end
-    end
-    F0(F0<0.5)=0.5;
-    dff_bl = (T_bl - F0) ./ F0;
-    clear F0
+    clear T_inj
 
-    fprintf('Computing dF/F (Injection)...\n');
-    nf = n_frames_inj; win = max(round(nf*0.15),300); half = floor(win/2);
-    F0 = nan(size(T_inj));
-    for c = 1:half:nf
-        s = max(1,c-half); e = min(nf,c+half);
-        f0_chunk = prctile(T_inj(s:e,:),8,1);
-        fe = min(c+half-1,nf);
-        F0(c:fe,:) = repmat(f0_chunk, fe-c+1, 1);
-    end
-    for j = 1:size(F0,2)
-        col = F0(:,j); m = isnan(col);
-        if any(m), iv = find(~m); col(m) = interp1(iv,col(iv),find(m),'nearest','extrap'); F0(:,j) = col; end
-    end
-    F0(F0<0.5)=0.5;
-    dff_inj = (T_inj - F0) ./ F0;
-    clear F0 T_bl T_inj
+    fprintf('Loading EXTRACT temporal weights & summary images...\n');
+    tw_bl  = double(h5read(ext_bl_file,  '/temporal_weights'))';
+    tw_inj = double(h5read(ext_inj_file, '/temporal_weights'))';
+    sumimg_bl  = h5read(ext_bl_file,  '/info/summary_image')';
+    sumimg_inj = h5read(ext_inj_file, '/info/summary_image')';
+
+    fprintf('Loading cell map images...\n');
+    cellmap_bl  = imread(fullfile(bl_path,  'cell_map.png'));
+    cellmap_inj = imread(fullfile(inj_path, 'cell_map.png'));
 
     % --- Z-score each neuron -------------------------------------------------
     fprintf('Z-scoring...\n');
-    z_bl  = (dff_bl  - mean(dff_bl,1))  ./ max(std(dff_bl,0,1),  1e-8);
-    z_inj = (dff_inj - mean(dff_inj,1)) ./ max(std(dff_inj,0,1), 1e-8);
+    eps_z = cast(1e-8, 'like', dff_bl);
+    z_bl  = (dff_bl  - mean(dff_bl,1))  ./ max(std(dff_bl,0,1),  eps_z);
+    eps_zj = cast(1e-8, 'like', dff_inj);
+    z_inj = (dff_inj - mean(dff_inj,1)) ./ max(std(dff_inj,0,1), eps_zj);
 
     % --- Per-neuron statistics (inline) ---------------------------------------
     fprintf('Per-neuron statistics...\n');

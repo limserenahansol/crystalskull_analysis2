@@ -58,6 +58,8 @@ They are **complementary** (estimation vs distribution-level test). Details and 
 
 Parameters: `z_thresh`, `time_bin`, `n_boot`, `n_corr_sample`, etc. Incomplete experiments (missing EXTRACT files) are **skipped**; the batch continues.
 
+**Memory (large mesoscope movies):** If MATLAB reports **Out of memory** during dF/F, lower **`dff_neuron_block`** (e.g. `512` or `256`). **`use_single_trace = true`** (default) stores traces and dF/F in **single** precision (~half the RAM of double). Set **`use_single_trace = false`** only if you need full double precision.
+
 ## Dataset Structure
 
 Your data must follow the EXTRACT output layout. See **[docs/DATASET_STRUCTURE.md](docs/DATASET_STRUCTURE.md)** for a detailed description.
