@@ -13,6 +13,7 @@ This repository provides a MATLAB pipeline that:
 - Derives event rates (z > 2 upward crossings per second)
 - Computes **per–1 s bin fraction active** (“population synchrony” / recruitment; see **docs/METHODS.md**)
 - Produces **7 publication-ready figures** and **`summary_stats.txt`** (bootstrap CIs, Wilcoxon, KS, Cohen’s *d*)
+- Supports **batch mode**: scan a parent folder for multiple experiment IDs (e.g. `CS1014-1b`, `CS0204-1b`) and write **`out_root/<experiment_id>/`** for each
 
 ## Documentation (methods & legends)
 
@@ -44,26 +45,29 @@ They are **complementary** (estimation vs distribution-level test). Details and 
    ```
 
 2. **Edit the CONFIG section** at the top of `extract_analysis.m`:
-   - `base_dir` — root path to your experiment (e.g. `\\server\crystal_skull\experiment_id`)
-   - `bl_subfolder` — subfolder under `Baseline/` (e.g. `mirror1path`)
-   - `inj_subfolder` — subfolder under `Injection/` (e.g. `mirror1path`)
-   - `out_dir` — where figures and `summary_stats.txt` are saved
+   - **`batch_mode`** — `true` = auto-discover experiments under **`root_hazon`**; `false` = only **`exp_list_manual{1}`**
+   - **`root_hazon`** — parent folder containing one subfolder per experiment (each with `Baseline/` and `Injection/`)
+   - **`bl_subfolder`** / **`inj_subfolder`** — mirror path under each condition (e.g. `mirror2path`)
+   - **`out_root`** — defaults to **`extract_figures/`** next to the script; outputs go to **`out_root/<experiment_id>/`**
+   - **`exp_list_filter`** — optional cell array to limit which folder names run (default `{}` = all valid)
 
-3. **Run the script** in MATLAB:
+3. **Run** in MATLAB:
    ```matlab
    run('extract_analysis.m')
    ```
+
+Parameters: `z_thresh`, `time_bin`, `n_boot`, `n_corr_sample`, etc. Incomplete experiments (missing EXTRACT files) are **skipped**; the batch continues.
 
 ## Dataset Structure
 
 Your data must follow the EXTRACT output layout. See **[docs/DATASET_STRUCTURE.md](docs/DATASET_STRUCTURE.md)** for a detailed description.
 
-**Typical layout:**
+**Typical layout (each experiment folder under `root_hazon`):**
 
 ```
-base_dir/
+<experiment_id>/   e.g. CS1014-1b
 ├── Baseline/
-│   └── mirror1path/   (or m1fmousemirror2, etc.)
+│   └── mirror1path/   (or mirror2path, m1fmousemirror2, etc.)
 │       ├── M_moco_frr.mat      # Full-rate traces (T) + spatial weights (S)
 │       ├── M_moco_ds_ext.mat   # Temporal weights, summary image
 │       ├── M_summary.mat       # Framerate
@@ -85,6 +89,8 @@ base_dir/
 | `fig6_activity_heatmaps.png` | Z-scored activity heatmaps (sorted by peak) |
 | `fig7_spatial_event_rate.png` | Event rate projected onto FOV |
 | `summary_stats.txt` | Population metrics, medians, statistical tests |
+
+With **batch mode**, each row above lives under **`out_root/<experiment_id>/`**.
 
 **Manuscript vs file names:** Synchrony and population mean event rate are in **`fig2_population_activity.png`**, not in `fig5_PCA_dimensionality.png` (PCA only). If your report uses “Figure 5E/F” for those panels, state that **panel letters refer to the composite manuscript figure**.
 
