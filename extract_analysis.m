@@ -3,7 +3,7 @@
 %
 % Run once — all figures and summary saved to out_dir (see CONFIG below).
 %
-% See README.md and docs/DATASET_STRUCTURE.md for dataset layout and usage.
+% See README.md, docs/DATASET_STRUCTURE.md, and docs/METHODS.md (metrics & statistics).
 
 clear; close all; clc;
 tic;
@@ -152,6 +152,9 @@ for b = 1:n_bins_inj
     pop_frac_inj(b) = mean(any(chunk > z_thresh, 1));
 end
 
+% Wilcoxon: compare per-1s-bin fraction-active distributions (fig2 synchrony panel + summary_stats)
+[p_popfrac,~] = ranksum(pop_frac_bl, pop_frac_inj);
+
 % --- Pairwise correlations (sampled) --------------------------------------
 fprintf('Pairwise correlations (%d sampled)...\n', n_corr_sample);
 rng(42);
@@ -283,8 +286,9 @@ ci_inj = prctile(boot_inj, [2.5 97.5]);
 xline(mean(pop_frac_bl),  '-','Color',col_bl, 'LineWidth',2);
 xline(mean(pop_frac_inj), '-','Color',col_inj,'LineWidth',2);
 xlabel('Fraction Active'); ylabel('Density');
-title(sprintf('Synchrony Distribution\nBL: %.4f [%.4f-%.4f]  Inj: %.4f [%.4f-%.4f]', ...
-    mean(pop_frac_bl), ci_bl(1), ci_bl(2), mean(pop_frac_inj), ci_inj(1), ci_inj(2)));
+title(sprintf(['Synchrony Distribution\nBL: %.4f [%.4f-%.4f]  Inj: %.4f [%.4f-%.4f]\n' ...
+    'Wilcoxon rank-sum (per-bin fractions), p = %.2e'], ...
+    mean(pop_frac_bl), ci_bl(1), ci_bl(2), mean(pop_frac_inj), ci_inj(1), ci_inj(2), p_popfrac));
 legend('Baseline','Injection'); box off;
 
 subplot(3,2,4);
@@ -507,7 +511,7 @@ L{end+1} = '--- Statistical Tests ---';
 [p1,~] = ranksum(mean_dff_bl,   mean_dff_inj);
 [p2,~] = ranksum(event_rate_bl, event_rate_inj);
 [p3,~] = ranksum(pw_bl, pw_inj);
-[p4,~] = ranksum(pop_frac_bl, pop_frac_inj);
+p4 = p_popfrac;
 [~,p5] = kstest2(event_rate_bl, event_rate_inj);
 [~,p6] = kstest2(mean_dff_bl,   mean_dff_inj);
 
