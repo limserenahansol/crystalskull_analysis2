@@ -293,8 +293,9 @@ for iExp = 1:numel(exp_list)
     for c = 1:n_neurons_bl, col_idx(jc(c)+1:jc(c+1)) = c; end
     Ss = sparse(S_bl_ir+1, col_idx, S_bl_data, n_pix, n_neurons_bl);
     cs = full(sum(Ss,1)); cs(cs==0)=1; Sn = Ss ./ cs;
-    actmap_bl     = reshape(full(Sn * mean_dff_bl),   frame_px, frame_px);
-    erate_map_bl  = reshape(full(Sn * event_rate_bl),  frame_px, frame_px);
+    % sparse Sn is double; mean_dff / event_rate can be single when use_single_trace
+    actmap_bl     = reshape(full(Sn * double(mean_dff_bl)),   frame_px, frame_px);
+    erate_map_bl  = reshape(full(Sn * double(event_rate_bl)),  frame_px, frame_px);
     clear Ss Sn col_idx jc cs S_bl_ir S_bl_jc S_bl_data
 
     % Injection maps
@@ -302,8 +303,8 @@ for iExp = 1:numel(exp_list)
     for c = 1:n_neurons_inj, col_idx(jc(c)+1:jc(c+1)) = c; end
     Ss = sparse(S_inj_ir+1, col_idx, S_inj_data, n_pix, n_neurons_inj);
     cs = full(sum(Ss,1)); cs(cs==0)=1; Sn = Ss ./ cs;
-    actmap_inj    = reshape(full(Sn * mean_dff_inj),   frame_px, frame_px);
-    erate_map_inj = reshape(full(Sn * event_rate_inj),  frame_px, frame_px);
+    actmap_inj    = reshape(full(Sn * double(mean_dff_inj)),   frame_px, frame_px);
+    erate_map_inj = reshape(full(Sn * double(event_rate_inj)),  frame_px, frame_px);
     clear Ss Sn col_idx jc cs S_inj_ir S_inj_jc S_inj_data
 
     clear dff_bl dff_inj
