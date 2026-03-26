@@ -288,7 +288,8 @@ xline(mean(pop_frac_inj), '-','Color',col_inj,'LineWidth',2);
 xlabel('Fraction Active'); ylabel('Density');
 title(sprintf(['Synchrony Distribution\nBL: %.4f [%.4f-%.4f]  Inj: %.4f [%.4f-%.4f]\n' ...
     'Wilcoxon rank-sum (per-bin fractions), p = %.2e'], ...
-    mean(pop_frac_bl), ci_bl(1), ci_bl(2), mean(pop_frac_inj), ci_inj(1), ci_inj(2), p_popfrac));
+    mean(pop_frac_bl), ci_bl(1), ci_bl(2), mean(pop_frac_inj), ci_inj(1), ci_inj(2), p_popfrac), ...
+    'FontSize', 9, 'Interpreter', 'none');
 legend('Baseline','Injection'); box off;
 
 subplot(3,2,4);
@@ -342,7 +343,10 @@ text(1, n_neurons_bl+200,  sprintf('%d', n_neurons_bl),  'HorizontalAlignment','
 text(2, n_neurons_inj+200, sprintf('%d', n_neurons_inj), 'HorizontalAlignment','center','FontWeight','bold');
 box off;
 
-exportgraphics(gcf, fullfile(out_dir,'fig2_population_activity.png'),'Resolution',200);
+fig2_path = fullfile(out_dir, 'fig2_population_activity.png');
+exportgraphics(gcf, fig2_path, 'Resolution', 200);
+fprintf('Wrote %s\n  Synchrony panel: Wilcoxon p = %.2e (matches ''Fraction active (Wilcoxon)'' in summary_stats.txt)\n', ...
+    fig2_path, p_popfrac);
 
 % --- FIGURE 3: Per-Neuron CDF Distributions --------------------------------
 figure('Position',[30 30 1600 500],'Color','w');
