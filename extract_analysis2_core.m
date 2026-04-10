@@ -3,6 +3,7 @@ function extract_analysis2_core(bl_path, inj_path, out_dir, run_id, params)
 %   extract_analysis2_core(bl_path, inj_path, out_dir, run_id)
 %   extract_analysis2_core(..., params)  optional struct: z_thresh, n_boot,
 %     time_bin, n_pc, n_corr_sample, frame_px, max_show, col_bl, col_inj
+%     skip_first_sec, use_last_sec — see extract_apply_time_window_T.m
 
 if nargin < 5 || isempty(params)
     params = struct();
@@ -19,6 +20,9 @@ n_pc     = getp(params, 'n_pc', 10);
 n_corr_sample = getp(params, 'n_corr_sample', 500);
 frame_px = getp(params, 'frame_px', 2304);
 max_show = getp(params, 'max_show', 2000);
+skip_first_sec = getp(params, 'skip_first_sec', 0);
+use_last_sec   = getp(params, 'use_last_sec', inf);
+trunc_note = '';
 
 if exist(out_dir, 'dir') ~= 7
     mkdir(out_dir);
@@ -82,8 +86,30 @@ cellmap_inj = imread(fullfile(inj_path, 'cell_map.png'));
 dur_bl  = n_frames_bl  / fs_bl;
 dur_inj = n_frames_inj / fs_inj;
 
-fprintf('\n  Baseline:  %d neurons | %d frames | %.2f Hz | %.1f s\n', n_neurons_bl, n_frames_bl, fs_bl, dur_bl);
-fprintf('  Injection: %d neurons | %d frames | %.2f Hz | %.1f s\n\n', n_neurons_inj, n_frames_inj, fs_inj, dur_inj);
+fprintf('\n  Baseline:  %d neurons | %d frames | %.2f Hz | %.1f s (full load)\n', n_neurons_bl, n_frames_bl, fs_bl, dur_bl);
+fprintf('  Injection: %d neurons | %d frames | %.2f Hz | %.1f s (full load)\n', n_neurons_inj, n_frames_inj, fs_inj, dur_inj);
+
+if skip_first_sec > 0 || (isfinite(use_last_sec) && use_last_sec > 0)
+    T_bl  = extract_apply_time_window_T(T_bl,  fs_bl,  skip_first_sec, use_last_sec);
+    T_inj = extract_apply_time_window_T(T_inj, fs_inj, skip_first_sec, use_last_sec);
+    [n_frames_bl,  n_neurons_bl]  = size(T_bl);
+    [n_frames_inj, n_neurons_inj] = size(T_inj);
+    dur_bl  = n_frames_bl  / fs_bl;
+    dur_inj = n_frames_inj / fs_inj;
+    if skip_first_sec > 0 && isfinite(use_last_sec) && use_last_sec > 0
+        trunc_note = sprintf(' | Time window: skip first %.0f s, then last %.0f s of remainder (BL %d fr / %.1f s, INJ %d fr / %.1f s)', ...
+            skip_first_sec, use_last_sec, n_frames_bl, dur_bl, n_frames_inj, dur_inj);
+    elseif skip_first_sec > 0
+        trunc_note = sprintf(' | Time window: skip first %.0f s, remainder to end (BL %d fr / %.1f s, INJ %d fr / %.1f s)', ...
+            skip_first_sec, n_frames_bl, dur_bl, n_frames_inj, dur_inj);
+    else
+        trunc_note = sprintf(' | Time window: last %.0f s only (BL %d fr / %.1f s, INJ %d fr / %.1f s)', ...
+            use_last_sec, n_frames_bl, dur_bl, n_frames_inj, dur_inj);
+    end
+    fprintf('  After truncation:%s\n\n', trunc_note);
+else
+    fprintf('\n');
+end
 
 % --- Compute dF/F (inline, 8th percentile rolling baseline) ---------------
 fprintf('Computing dF/F (Baseline)...\n');
@@ -488,7 +514,7 @@ fprintf('%s\n', repmat('=', 1, 90));
 
 fid = fopen(fullfile(out_dir, 'summary_stats.txt'), 'w');
 L = {};
-L{end+1} = sprintf('%s | EXTRACT Results: Baseline vs Injection', run_id);
+L{end+1} = sprintf('%s | EXTRACT Results: Baseline vs Injection%s', run_id, trunc_note);
 L{end+1} = repmat('=', 1, 90);
 L{end+1} = sprintf('%-45s %15s %15s', 'Metric', 'Baseline', 'Injection');
 L{end+1} = repmat('-', 1, 75);
