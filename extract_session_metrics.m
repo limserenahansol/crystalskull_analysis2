@@ -1,26 +1,53 @@
-function m = extract_session_metrics(session_mirror_path, params)
+function m = extract_session_metrics(session_mirror_path, params, phase)
 %EXTRACT_SESSION_METRICS  Population metrics for one recording (one mirror folder).
 %
 %   m = extract_session_metrics(session_mirror_path, params)
+%   m = extract_session_metrics(session_mirror_path, params, 'baseline'|'injection')
 %
-%   session_mirror_path — folder containing resolved *moco_frr.mat, etc. (e.g.
-%     .../Baseline/mirror1path or .../Injection/mirror1path)
+%   session_mirror_path — folder containing resolved *moco_frr.mat, etc.
 %
-%   params — same optional fields as extract_analysis2_core (z_thresh, n_boot,
-%     time_bin, n_pc, n_corr_sample, skip_first_sec, use_last_sec, frame_px).
+%   params — z_thresh, time_bin, n_pc, n_corr_sample, frame_px, plus either:
+%     • Per-arm: skip_first_sec_bl, use_last_sec_bl, skip_first_sec_inj, use_last_sec_inj
+%     • Legacy symmetric: skip_first_sec, use_last_sec (both arms)
 %
-%   Output m fields are scalars suitable for Δ = m_inj - m_baseline per mouse.
+%   phase — when using per-arm params from extract_cohort_delta_pipeline, pass
+%     'baseline' or 'injection'. Omitted → legacy skip_first_sec / use_last_sec only.
 
 if nargin < 2 || isempty(params)
     params = struct();
+end
+if nargin < 3
+    phase = '';
 end
 
 z_thresh = getp(params, 'z_thresh', 2);
 time_bin = getp(params, 'time_bin', 1);
 n_pc     = getp(params, 'n_pc', 10);
 n_corr_sample = getp(params, 'n_corr_sample', 500);
-skip_first_sec = getp(params, 'skip_first_sec', 0);
-use_last_sec   = getp(params, 'use_last_sec', inf);
+
+[sk_bl, ul_bl, sk_inj, ul_inj] = extract_resolve_time_window_params(params);
+has_split = isfield(params, 'skip_first_sec_bl') || isfield(params, 'use_last_sec_bl') ...
+    || isfield(params, 'skip_first_sec_inj') || isfield(params, 'use_last_sec_inj');
+
+if nargin >= 3 && ~isempty(phase) && strcmpi(phase, 'baseline')
+    skip_first_sec = sk_bl;
+    use_last_sec   = ul_bl;
+elseif nargin >= 3 && ~isempty(phase) && strcmpi(phase, 'injection')
+    skip_first_sec = sk_inj;
+    use_last_sec   = ul_inj;
+elseif isempty(phase) && has_split
+    low = lower(strrep(session_mirror_path, '\', '/'));
+    if contains(low, 'injection')
+        skip_first_sec = sk_inj;
+        use_last_sec   = ul_inj;
+    else
+        skip_first_sec = sk_bl;
+        use_last_sec   = ul_bl;
+    end
+else
+    skip_first_sec = getp(params, 'skip_first_sec', 0);
+    use_last_sec   = getp(params, 'use_last_sec', inf);
+end
 
 R = extract_resolve_extract_files(session_mirror_path);
 if isempty(R.frr) || isempty(R.ds_ext) || isempty(R.summary)

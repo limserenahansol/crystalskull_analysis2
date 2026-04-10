@@ -86,7 +86,14 @@ When **baseline differs across days**, compare **within-mouse change** (injectio
 - **`extract_session_metrics.m`** — metrics for one mirror folder (Baseline or Injection), same preprocessing as `extract_analysis2_core` (dF/F, z-score, event rate, 1 s population bins, sampled pairwise correlations, PCA variance).
 - **`extract_cohort_delta_pipeline.m`** — edit CONFIG: two cohorts (each: root path + list of mouse folder names), shared `mirror_subfolder`. For each mouse, computes **Δ** = session metrics(injection) − session metrics(baseline), then **Wilcoxon rank-sum** between cohorts on those Δ values (with **n = 2 vs 2**, *p*-values are only exploratory). Writes **`cohort_delta_per_mouse.csv`**, **`delta_group_comparison.txt`**, **`fig_cohort_delta_comparison.png`**.
 
-Use the same **`params.skip_first_sec` / `params.use_last_sec`** as in the truncated single-session pipeline if you want matched time windows.
+For **full baseline vs last 10 min injection** (matched duration, different days), set in `params`:
+
+- `skip_first_sec_bl = 0`, `use_last_sec_bl = inf` (baseline uncropped)
+- `skip_first_sec_inj = 0`, `use_last_sec_inj = 600` (injection: last 10 min only)
+
+Legacy symmetric `skip_first_sec` / `use_last_sec` still applies the **same** crop to both arms if you do not set the `*_bl` / `*_inj` fields. See **`extract_resolve_time_window_params.m`**.
+
+**`extract_analysis2_truncated.m`** uses that asymmetric pattern by default.
 
 ## Outputs
 

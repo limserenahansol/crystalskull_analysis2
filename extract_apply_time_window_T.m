@@ -7,8 +7,11 @@ function T = extract_apply_time_window_T(T, fs, skip_first_sec, use_last_sec)
 %   use_last_sec    — after that, keep only the last this many seconds of the
 %                     remainder. Inf or <=0 means keep the entire remainder.
 %
-%   Example: skip_first_sec = 600, use_last_sec = 600
-%            → ignore first 10 min, then use only the final 10 min of what is left.
+%   Example (symmetric crop on both traces in older scripts): skip=600, use_last=600.
+%
+%   Example (injection only, last 10 min): skip_first_sec_inj=0, use_last_sec_inj=600
+%            in extract_resolve_time_window_params / extract_analysis2_core — baseline
+%            stays full; injection uses this helper with skip=0, use_last=600.
 
 [nf, ~] = size(T);
 fs = double(fs);

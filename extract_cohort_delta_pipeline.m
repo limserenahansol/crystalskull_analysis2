@@ -31,14 +31,18 @@ mirror_subfolder = 'mirror1path';  % or 'mirror2path'
 
 out_dir = 'C:\Users\hsollim\Documents\MATLAB\MATLAB\2p\cohort_delta_melittin_vs_morphine';
 
-% Match extract_analysis2_core / truncated (set skip_first_sec / use_last_sec for truncated window)
+% Match extract_analysis2_core. For BL full + INJ last 10 min (cohort Δ on matched length):
+%   params.skip_first_sec_bl = 0; params.use_last_sec_bl = inf;
+%   params.skip_first_sec_inj = 0; params.use_last_sec_inj = 600;
 params = struct( ...
     'z_thresh', 2, ...
     'time_bin', 1, ...
     'n_pc', 10, ...
     'n_corr_sample', 500, ...
-    'skip_first_sec', 0, ...
-    'use_last_sec', inf);
+    'skip_first_sec_bl', 0, ...
+    'use_last_sec_bl', inf, ...
+    'skip_first_sec_inj', 0, ...
+    'use_last_sec_inj', inf);
 %% ========================================================================
 
 close all;
@@ -139,8 +143,8 @@ for mi = 1:numel(mouse_list)
     end
     fprintf('--- %s | %s ---\n', cohort_name, mouse_id);
     try
-        m_bl = extract_session_metrics(bl_path, params);
-        m_inj = extract_session_metrics(inj_path, params);
+        m_bl = extract_session_metrics(bl_path, params, 'baseline');
+        m_inj = extract_session_metrics(inj_path, params, 'injection');
     catch ME
         warning('extract_cohort_delta_pipeline:MetricsFailed', '%s: %s', mouse_id, ME.message);
         continue;

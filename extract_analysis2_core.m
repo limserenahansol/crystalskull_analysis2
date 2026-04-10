@@ -3,7 +3,9 @@ function extract_analysis2_core(bl_path, inj_path, out_dir, run_id, params)
 %   extract_analysis2_core(bl_path, inj_path, out_dir, run_id)
 %   extract_analysis2_core(..., params)  optional struct: z_thresh, n_boot,
 %     time_bin, n_pc, n_corr_sample, frame_px, max_show, col_bl, col_inj
-%     skip_first_sec, use_last_sec — see extract_apply_time_window_T.m
+%     Per-arm (preferred): skip_first_sec_bl, use_last_sec_bl, skip_first_sec_inj,
+%     use_last_sec_inj — see extract_resolve_time_window_params.m
+%     Legacy symmetric: skip_first_sec, use_last_sec (same crop on BL and INJ)
 
 if nargin < 5 || isempty(params)
     params = struct();
@@ -20,8 +22,6 @@ n_pc     = getp(params, 'n_pc', 10);
 n_corr_sample = getp(params, 'n_corr_sample', 500);
 frame_px = getp(params, 'frame_px', 2304);
 max_show = getp(params, 'max_show', 2000);
-skip_first_sec = getp(params, 'skip_first_sec', 0);
-use_last_sec   = getp(params, 'use_last_sec', inf);
 trunc_note = '';
 
 if exist(out_dir, 'dir') ~= 7
@@ -86,27 +86,30 @@ cellmap_inj = imread(fullfile(inj_path, 'cell_map.png'));
 dur_bl  = n_frames_bl  / fs_bl;
 dur_inj = n_frames_inj / fs_inj;
 
-fprintf('\n  Baseline:  %d neurons | %d frames | %.2f Hz | %.1f s (full load)\n', n_neurons_bl, n_frames_bl, fs_bl, dur_bl);
-fprintf('  Injection: %d neurons | %d frames | %.2f Hz | %.1f s (full load)\n', n_neurons_inj, n_frames_inj, fs_inj, dur_inj);
+fprintf('\n  Baseline:  %d neurons | %d frames | %.2f Hz | %.1f s (loaded)\n', n_neurons_bl, n_frames_bl, fs_bl, dur_bl);
+fprintf('  Injection: %d neurons | %d frames | %.2f Hz | %.1f s (loaded)\n', n_neurons_inj, n_frames_inj, fs_inj, dur_inj);
 
-if skip_first_sec > 0 || (isfinite(use_last_sec) && use_last_sec > 0)
-    T_bl  = extract_apply_time_window_T(T_bl,  fs_bl,  skip_first_sec, use_last_sec);
-    T_inj = extract_apply_time_window_T(T_inj, fs_inj, skip_first_sec, use_last_sec);
+dur_bl_full  = dur_bl;
+dur_inj_full = dur_inj;
+[sk_bl, ul_bl, sk_inj, ul_inj] = extract_resolve_time_window_params(params);
+crop_bl  = (sk_bl > 0) || (isfinite(ul_bl) && ul_bl > 0);
+crop_inj = (sk_inj > 0) || (isfinite(ul_inj) && ul_inj > 0);
+if crop_bl
+    T_bl = extract_apply_time_window_T(T_bl, fs_bl, sk_bl, ul_bl);
+end
+if crop_inj
+    T_inj = extract_apply_time_window_T(T_inj, fs_inj, sk_inj, ul_inj);
+end
+if crop_bl || crop_inj
     [n_frames_bl,  n_neurons_bl]  = size(T_bl);
     [n_frames_inj, n_neurons_inj] = size(T_inj);
     dur_bl  = n_frames_bl  / fs_bl;
     dur_inj = n_frames_inj / fs_inj;
-    if skip_first_sec > 0 && isfinite(use_last_sec) && use_last_sec > 0
-        trunc_note = sprintf(' | Time window: skip first %.0f s, then last %.0f s of remainder (BL %d fr / %.1f s, INJ %d fr / %.1f s)', ...
-            skip_first_sec, use_last_sec, n_frames_bl, dur_bl, n_frames_inj, dur_inj);
-    elseif skip_first_sec > 0
-        trunc_note = sprintf(' | Time window: skip first %.0f s, remainder to end (BL %d fr / %.1f s, INJ %d fr / %.1f s)', ...
-            skip_first_sec, n_frames_bl, dur_bl, n_frames_inj, dur_inj);
-    else
-        trunc_note = sprintf(' | Time window: last %.0f s only (BL %d fr / %.1f s, INJ %d fr / %.1f s)', ...
-            use_last_sec, n_frames_bl, dur_bl, n_frames_inj, dur_inj);
-    end
-    fprintf('  After truncation:%s\n\n', trunc_note);
+    trunc_note = sprintf([' | Time crop — Baseline: %s (was %.1f s → now %.1f s) | ' ...
+        'Injection: %s (was %.1f s → now %.1f s)'], ...
+        extract_time_window_label(sk_bl, ul_bl), dur_bl_full, dur_bl, ...
+        extract_time_window_label(sk_inj, ul_inj), dur_inj_full, dur_inj);
+    fprintf('  After time crop:%s\n\n', trunc_note);
 else
     fprintf('\n');
 end
@@ -584,5 +587,17 @@ if isstruct(s) && isfield(s, name)
     v = s.(name);
 else
     v = default;
+end
+end
+
+function s = extract_time_window_label(skip_sec, use_last_sec)
+if skip_sec <= 0 && (~isfinite(use_last_sec) || use_last_sec <= 0)
+    s = 'full recording (no crop)';
+elseif skip_sec > 0 && (~isfinite(use_last_sec) || use_last_sec <= 0)
+    s = sprintf('skip first %.0f s, rest to end', skip_sec);
+elseif skip_sec <= 0 && isfinite(use_last_sec) && use_last_sec > 0
+    s = sprintf('last %.0f s only', use_last_sec);
+else
+    s = sprintf('skip %.0f s then last %.0f s of remainder', skip_sec, use_last_sec);
 end
 end

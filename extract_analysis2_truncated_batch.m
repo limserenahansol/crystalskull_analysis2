@@ -1,10 +1,12 @@
 function extract_analysis2_truncated_batch()
-%EXTRACT_ANALYSIS2_TRUNCATED_BATCH  Same as extract_analysis2_batch, but each run
-%   drops the first 10 min of traces, then keeps only the last 10 min of the remainder.
+%EXTRACT_ANALYSIS2_TRUNCATED_BATCH  Same as extract_analysis2_batch, but:
+%   Baseline = full recording (no crop). Injection = last N seconds only (default 600 s),
+%   for ~10 min baseline vs ~10 min late-injection comparison.
 %
 %   extract_analysis2_truncated_batch
 %
-% Requires: extract_analysis2_core.m, extract_apply_time_window_T.m, extract_resolve_extract_files.m
+% Requires: extract_analysis2_core.m, extract_resolve_time_window_params.m,
+%           extract_apply_time_window_T.m, extract_resolve_extract_files.m
 
 tic;
 
@@ -18,8 +20,7 @@ out_root = 'C:\Users\hsollim\Documents\MATLAB\MATLAB\2p\extract_figures_batch_mo
 
 mouse_ids_only = {};
 
-skip_first_sec = 600;
-use_last_sec   = 600;
+inj_last_sec = 600;  % last 10 min of injection only; baseline uncropped
 
 params = struct( ...
     'z_thresh', 2, ...
@@ -29,8 +30,10 @@ params = struct( ...
     'n_corr_sample', 500, ...
     'frame_px', 2304, ...
     'max_show', 2000, ...
-    'skip_first_sec', skip_first_sec, ...
-    'use_last_sec', use_last_sec);
+    'skip_first_sec_bl', 0, ...
+    'use_last_sec_bl', inf, ...
+    'skip_first_sec_inj', 0, ...
+    'use_last_sec_inj', inj_last_sec);
 %% ========================================================================
 
 close all;
@@ -71,9 +74,9 @@ for mi = 1:numel(mouse_ids_only)
                 continue;
             end
 
-            out_tag = sprintf('%s_%s_%s_skip%d_last%d', mouse_id, bl_folder, mirror_name, skip_first_sec, use_last_sec);
+            out_tag = sprintf('%s_%s_%s_BLfull_INJlast%ds', mouse_id, bl_folder, mirror_name, inj_last_sec);
             out_dir = fullfile(out_root, out_tag);
-            run_id  = sprintf('%s · %s · %s · skip%ds_last%ds', mouse_id, bl_folder, mirror_name, skip_first_sec, use_last_sec);
+            run_id  = sprintf('%s · %s · %s · BL full · INJ last %ds', mouse_id, bl_folder, mirror_name, inj_last_sec);
 
             fprintf('\n-------- RUN %s --------\n', out_tag);
             try
