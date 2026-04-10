@@ -79,6 +79,15 @@ Your data must follow the EXTRACT output layout. See **[docs/DATASET_STRUCTURE.m
         └── (same files)
 ```
 
+## Cross-day cohort comparison (Δ = injection − baseline)
+
+When **baseline differs across days**, compare **within-mouse change** (injection minus baseline on the same day) instead of raw cross-day baselines.
+
+- **`extract_session_metrics.m`** — metrics for one mirror folder (Baseline or Injection), same preprocessing as `extract_analysis2_core` (dF/F, z-score, event rate, 1 s population bins, sampled pairwise correlations, PCA variance).
+- **`extract_cohort_delta_pipeline.m`** — edit CONFIG: two cohorts (each: root path + list of mouse folder names), shared `mirror_subfolder`. For each mouse, computes **Δ** = session metrics(injection) − session metrics(baseline), then **Wilcoxon rank-sum** between cohorts on those Δ values (with **n = 2 vs 2**, *p*-values are only exploratory). Writes **`cohort_delta_per_mouse.csv`**, **`delta_group_comparison.txt`**, **`fig_cohort_delta_comparison.png`**.
+
+Use the same **`params.skip_first_sec` / `params.use_last_sec`** as in the truncated single-session pipeline if you want matched time windows.
+
 ## Outputs
 
 | File | Description |
