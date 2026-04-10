@@ -27,13 +27,29 @@ end
 fprintf('=== %s ===\n', run_id);
 fprintf('  BL: %s\n  INJ: %s\n  OUT: %s\n', bl_path, inj_path, out_dir);
 
+% --- Resolve .mat names (legacy M_*.mat or session-specific *moco_frr.mat, etc.)
+Rb = extract_resolve_extract_files(bl_path);
+Ri = extract_resolve_extract_files(inj_path);
+if isempty(Rb.frr) || isempty(Rb.ds_ext) || isempty(Rb.summary)
+    error('extract_analysis2_core:MissingBaseline', ...
+        'Could not find moco_frr / ds_ext / summary .mat under Baseline folder:\n%s', bl_path);
+end
+if isempty(Ri.frr) || isempty(Ri.ds_ext) || isempty(Ri.summary)
+    error('extract_analysis2_core:MissingInjection', ...
+        'Could not find moco_frr / ds_ext / summary .mat under Injection folder:\n%s', inj_path);
+end
+frr_bl_file  = Rb.frr;
+frr_inj_file = Ri.frr;
+ext_bl_file  = Rb.ds_ext;
+ext_inj_file = Ri.ds_ext;
+sum_bl_file  = Rb.summary;
+sum_inj_file = Ri.summary;
+fprintf('  BL mats: %s\n           %s\n           %s\n', ...
+    Rb.frr, Rb.ds_ext, Rb.summary);
+fprintf('  INJ mats: %s\n            %s\n            %s\n', ...
+    Ri.frr, Ri.ds_ext, Ri.summary);
+
 % --- Load data (using h5read for HDF5/v7.3 mat files) --------------------
-frr_bl_file  = fullfile(bl_path,  'M_moco_frr.mat');
-frr_inj_file = fullfile(inj_path, 'M_moco_frr.mat');
-ext_bl_file  = fullfile(bl_path,  'M_moco_ds_ext.mat');
-ext_inj_file = fullfile(inj_path, 'M_moco_ds_ext.mat');
-sum_bl_file  = fullfile(bl_path,  'M_summary.mat');
-sum_inj_file = fullfile(inj_path, 'M_summary.mat');
 
 fprintf('Loading Baseline frr (T + S)...\n');
 T_bl = double(h5read(frr_bl_file, '/T'))';
