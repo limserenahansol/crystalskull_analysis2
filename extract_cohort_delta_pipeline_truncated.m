@@ -1,43 +1,31 @@
-function extract_cohort_delta_pipeline()
-%EXTRACT_COHORT_DELTA_PIPELINE  Compare injection−baseline Δ across two cohorts (different days).
+function extract_cohort_delta_pipeline_truncated()
+%EXTRACT_COHORT_DELTA_PIPELINE_TRUNCATED  Same as extract_cohort_delta_pipeline, but metrics use:
+%   Baseline = full recording (no crop)
+%   Injection = last 600 s only (same logic as extract_analysis2_truncated)
 %
-%   extract_cohort_delta_pipeline
-%
-% Whole-recording version: baseline and injection traces are used in full (see params;
-% default use_last_sec_inj = inf). For BL full + INJ last 10 min only, run
 %   extract_cohort_delta_pipeline_truncated
 %
-% Design: each mouse contributes Δ = metric_injection − metric_baseline using the same
-% preprocessing as extract_analysis2_core (dF/F, z-score, event rates, pop bins, PCA, pw-corr).
-% Cohorts are compared on these Δ values (not raw cross-day baselines).
-%
-% Edit CONFIG below. Outputs: CSV, delta_group_comparison.txt, fig_cohort_delta_comparison.png
-%
-% Requires: extract_session_metrics.m, extract_resolve_extract_files.m,
-%           extract_apply_time_window_T.m, extract_resolve_time_window_params.m
+% Outputs go to a different folder than the "whole recording" pipeline so results are not overwritten.
 
 tic;
 
 %% ========================= CONFIG =======================================
-% Cohort A — melittin injection only (example paths; adjust mirror if needed)
 cohort_a_name = 'melittin_only';
 cohort_a_root = '\\stg-tnr50a1.stanford.edu\crystal_skull\omer_hazon';
 cohort_a_mice = {'CS1014-1b', 'CS1014-2w'};
 
-% Cohort B — melittin + morphine (different day / folder tree)
 cohort_b_name = 'melittin_morphine';
 cohort_b_root = '\\stg-tnr50a1.stanford.edu\crystal_skull\omer_hazon\morphine_20260408';
 cohort_b_mice = {'1014m01b', '1014m02w'};
 
 baseline_folder = 'Baseline';
 injection_folder = 'Injection';
-mirror_subfolder = 'mirror1path';  % or 'mirror2path'
+mirror_subfolder = 'mirror1path';
 
-out_dir = 'C:\Users\hsollim\Documents\MATLAB\MATLAB\2p\cohort_delta_melittin_vs_morphine';
+inj_last_sec = 600;
 
-% Match extract_analysis2_core. For BL full + INJ last 10 min (cohort Δ on matched length):
-%   params.skip_first_sec_bl = 0; params.use_last_sec_bl = inf;
-%   params.skip_first_sec_inj = 0; params.use_last_sec_inj = 600;
+out_dir = 'C:\Users\hsollim\Documents\MATLAB\MATLAB\2p\cohort_delta_melittin_vs_morphine_BLfull_INJlast600';
+
 params = struct( ...
     'z_thresh', 2, ...
     'time_bin', 1, ...
@@ -46,7 +34,7 @@ params = struct( ...
     'skip_first_sec_bl', 0, ...
     'use_last_sec_bl', inf, ...
     'skip_first_sec_inj', 0, ...
-    'use_last_sec_inj', inf);
+    'use_last_sec_inj', inj_last_sec);
 %% ========================================================================
 
 close all;
@@ -58,22 +46,21 @@ end
 
 rows = [];
 
-rows = [rows; process_cohort(1, cohort_a_name, cohort_a_root, cohort_a_mice, baseline_folder, injection_folder, mirror_subfolder, params)]; %#ok<AGROW>
-rows = [rows; process_cohort(2, cohort_b_name, cohort_b_root, cohort_b_mice, baseline_folder, injection_folder, mirror_subfolder, params)];
+rows = [rows; process_cohort_trunc(1, cohort_a_name, cohort_a_root, cohort_a_mice, baseline_folder, injection_folder, mirror_subfolder, params)]; %#ok<AGROW>
+rows = [rows; process_cohort_trunc(2, cohort_b_name, cohort_b_root, cohort_b_mice, baseline_folder, injection_folder, mirror_subfolder, params)];
 
 if isempty(rows)
     error('No mice processed; check paths and file resolution.');
 end
 
-metric_names = get_delta_metric_names();
+metric_names = get_delta_metric_names_trunc();
 Rw = struct2table(rows);
 writetable(Rw, fullfile(out_dir, 'cohort_delta_per_mouse.csv'));
 
-% --- Group comparison (ranksum on Δ between cohorts; small n → interpret cautiously) ---
 g1 = Rw.cohort == 1;
 g2 = Rw.cohort == 2;
 fid = fopen(fullfile(out_dir, 'delta_group_comparison.txt'), 'w');
-fprintf(fid, 'Delta = injection − baseline (same preprocessing as extract_analysis2_core)\n');
+fprintf(fid, 'Delta = injection − baseline | Baseline FULL | Injection LAST %d s only\n', inj_last_sec);
 fprintf(fid, 'Cohort 1: %s | Cohort 2: %s\n', cohort_a_name, cohort_b_name);
 fprintf(fid, 'Mirror: %s\n', mirror_subfolder);
 fprintf(fid, 'Note: ranksum with n=2 vs 2 mice is extremely low power; use for exploration only.\n\n');
@@ -95,13 +82,12 @@ for k = 1:numel(p_fields)
 end
 fclose(fid);
 
-% --- Figure: key metrics, Δ per mouse, two cohorts ----------------------------
 plot_metrics = {'d_mean_event_rate', 'd_mean_mean_dff', 'd_mean_pop_frac', 'd_median_pw_corr', 'd_pc1_var_pct', 'd_pc1_to_pc3_var_pct'};
 plot_metrics = plot_metrics(ismember(plot_metrics, Rw.Properties.VariableNames));
 nP = numel(plot_metrics);
 if nP > 0
-    figure('Color', 'w', 'Position', [40 40 200 * nP 380]);
-    sgtitle(sprintf('\\Delta (inj−baseline) by cohort: %s vs %s', cohort_a_name, cohort_b_name), 'FontSize', 12);
+    figure('Color', 'w', 'Position', [40 40 200 * nP 400]);
+    sgtitle(sprintf('\\Delta (inj−baseline) | BL full, INJ last %ds | %s vs %s', inj_last_sec, cohort_a_name, cohort_b_name), 'FontSize', 11);
     col1 = [0.13 0.59 0.95];
     col2 = [1.00 0.34 0.13];
     for k = 1:nP
@@ -129,20 +115,19 @@ if nP > 0
     exportgraphics(gcf, fullfile(out_dir, 'fig_cohort_delta_comparison.png'), 'Resolution', 200);
 end
 
-fprintf('\nDone. Outputs in:\n  %s\n', out_dir);
+fprintf('\nDone (truncated INJ window). Outputs in:\n  %s\n', out_dir);
 fprintf('Elapsed %.1f s\n', toc);
 
 end
 
-%% ----- process one cohort -----
-function rows = process_cohort(cohort_id, cohort_name, root, mouse_list, bl_f, inj_f, mirror, params)
+function rows = process_cohort_trunc(cohort_id, cohort_name, root, mouse_list, bl_f, inj_f, mirror, params)
 rows = [];
 for mi = 1:numel(mouse_list)
     mouse_id = mouse_list{mi};
     bl_path  = fullfile(root, mouse_id, bl_f, mirror);
     inj_path = fullfile(root, mouse_id, inj_f, mirror);
     if exist(bl_path, 'dir') ~= 7 || exist(inj_path, 'dir') ~= 7
-        warning('extract_cohort_delta_pipeline:SkipMouse', 'Missing folder for %s / %s', mouse_id, cohort_name);
+        warning('extract_cohort_delta_pipeline_truncated:SkipMouse', 'Missing folder for %s / %s', mouse_id, cohort_name);
         continue;
     end
     fprintf('--- %s | %s ---\n', cohort_name, mouse_id);
@@ -150,17 +135,17 @@ for mi = 1:numel(mouse_list)
         m_bl = extract_session_metrics(bl_path, params, 'baseline');
         m_inj = extract_session_metrics(inj_path, params, 'injection');
     catch ME
-        warning('extract_cohort_delta_pipeline:MetricsFailed', '%s: %s', mouse_id, ME.message);
+        warning('extract_cohort_delta_pipeline_truncated:MetricsFailed', '%s: %s', mouse_id, ME.message);
         continue;
     end
-    D = compute_delta_metrics(m_inj, m_bl);
+    D = compute_delta_metrics_trunc(m_inj, m_bl);
     r = struct('cohort', cohort_id, 'cohort_name', {cohort_name}, 'mouse_id', {mouse_id});
-    r = merge_struct(r, D);
+    r = merge_struct_trunc(r, D);
     rows = [rows; r]; %#ok<AGROW>
 end
 end
 
-function D = compute_delta_metrics(m_inj, m_bl)
+function D = compute_delta_metrics_trunc(m_inj, m_bl)
 fn = {'mean_mean_dff', 'median_mean_dff', 'mean_std_dff', 'median_std_dff', ...
     'mean_skew_dff', 'median_skew_dff', 'mean_event_rate', 'median_event_rate', ...
     'mean_pop_frac', 'mean_pop_rate_z', 'median_pw_corr', 'pc1_var_pct', 'pc1_to_pc3_var_pct'};
@@ -174,7 +159,7 @@ D.bl_n_neurons = m_bl.n_neurons;
 D.inj_n_neurons = m_inj.n_neurons;
 end
 
-function m = merge_struct(a, b)
+function m = merge_struct_trunc(a, b)
 fn = fieldnames(b);
 m = a;
 for k = 1:numel(fn)
@@ -182,7 +167,7 @@ for k = 1:numel(fn)
 end
 end
 
-function fn = get_delta_metric_names()
+function fn = get_delta_metric_names_trunc()
 fn = {'d_mean_mean_dff', 'd_median_mean_dff', 'd_mean_std_dff', 'd_median_std_dff', ...
     'd_mean_skew_dff', 'd_median_skew_dff', 'd_mean_event_rate', 'd_median_event_rate', ...
     'd_mean_pop_frac', 'd_mean_pop_rate_z', 'd_median_pw_corr', 'd_pc1_var_pct', 'd_pc1_to_pc3_var_pct', ...

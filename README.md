@@ -84,7 +84,8 @@ Your data must follow the EXTRACT output layout. See **[docs/DATASET_STRUCTURE.m
 When **baseline differs across days**, compare **within-mouse change** (injection minus baseline on the same day) instead of raw cross-day baselines.
 
 - **`extract_session_metrics.m`** — metrics for one mirror folder (Baseline or Injection), same preprocessing as `extract_analysis2_core` (dF/F, z-score, event rate, 1 s population bins, sampled pairwise correlations, PCA variance).
-- **`extract_cohort_delta_pipeline.m`** — edit CONFIG: two cohorts (each: root path + list of mouse folder names), shared `mirror_subfolder`. For each mouse, computes **Δ** = session metrics(injection) − session metrics(baseline), then **Wilcoxon rank-sum** between cohorts on those Δ values (with **n = 2 vs 2**, *p*-values are only exploratory). Writes **`cohort_delta_per_mouse.csv`**, **`delta_group_comparison.txt`**, **`fig_cohort_delta_comparison.png`**.
+- **`extract_cohort_delta_pipeline.m`** — **whole traces** (default: no time crop on BL or INJ; set `use_last_sec_inj` in `params` if you want). Edit CONFIG: two cohorts (root + mouse IDs), `mirror_subfolder`. Writes **`cohort_delta_per_mouse.csv`**, **`delta_group_comparison.txt`**, **`fig_cohort_delta_comparison.png`** under **`out_dir`** (default under your `2p` folder; change in CONFIG).
+- **`extract_cohort_delta_pipeline_truncated.m`** — same cohort logic, but **baseline full** and **injection last 600 s** only (matches `extract_analysis2_truncated`). Uses a **separate `out_dir`** so it does not overwrite the whole-trace run.
 
 For **full baseline vs last 10 min injection** (matched duration, different days), set in `params`:
 
