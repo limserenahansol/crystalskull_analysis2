@@ -1,12 +1,19 @@
 # Outputs (figures and summary from extract_analysis.m)
 extract_figures/
 summary_stats.txt
-fig*.png
+/fig*.png
 
 # MATLAB
 *.asv
 *.m~
 *.autosave
+
+# Python
+__pycache__/
+*.pyc
+
+# Exploratory / local-only stim runs
+stim_triggered_figures/_smoketest/
 
 # OS
 .DS_Store

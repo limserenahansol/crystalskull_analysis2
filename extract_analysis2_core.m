@@ -3,8 +3,11 @@ function extract_analysis2_core(bl_path, inj_path, out_dir, run_id, params)
 %   extract_analysis2_core(bl_path, inj_path, out_dir, run_id)
 %   extract_analysis2_core(..., params)  optional struct: z_thresh, n_boot,
 %     time_bin, n_pc, n_corr_sample, frame_px, max_show, col_bl, col_inj
-%     Per-arm (preferred): skip_first_sec_bl, use_last_sec_bl, skip_first_sec_inj,
-%     use_last_sec_inj — see extract_resolve_time_window_params.m
+%     Per-arm (preferred): skip_first_sec_bl, use_last_sec_bl, use_first_sec_bl,
+%     skip_first_sec_inj, use_last_sec_inj, use_first_sec_inj — see extract_resolve_time_window_params.m
+%     match_inj_last_to_baseline_dur — if true: after baseline time crop, use injection =
+%       last N seconds where N = baseline duration (seconds); ignores use_last_sec_inj /
+%       use_first_sec_inj for injection (per-mouse, handles 800 vs 900 s etc.).
 %     Legacy symmetric: skip_first_sec, use_last_sec (same crop on BL and INJ)
 
 if nargin < 5 || isempty(params)
@@ -91,24 +94,44 @@ fprintf('  Injection: %d neurons | %d frames | %.2f Hz | %.1f s (loaded)\n', n_n
 
 dur_bl_full  = dur_bl;
 dur_inj_full = dur_inj;
-[sk_bl, ul_bl, sk_inj, ul_inj] = extract_resolve_time_window_params(params);
-crop_bl  = (sk_bl > 0) || (isfinite(ul_bl) && ul_bl > 0);
-crop_inj = (sk_inj > 0) || (isfinite(ul_inj) && ul_inj > 0);
+[sk_bl, ul_bl, sk_inj, ul_inj, uf_bl, uf_inj] = extract_resolve_time_window_params(params);
+match_inj = getp(params, 'match_inj_last_to_baseline_dur', false);
+
+crop_bl  = (uf_bl > 0) || (sk_bl > 0) || (isfinite(ul_bl) && ul_bl > 0);
 if crop_bl
-    T_bl = extract_apply_time_window_T(T_bl, fs_bl, sk_bl, ul_bl);
+    T_bl = extract_apply_time_window_T(T_bl, fs_bl, sk_bl, ul_bl, uf_bl);
 end
-if crop_inj
-    T_inj = extract_apply_time_window_T(T_inj, fs_inj, sk_inj, ul_inj);
+[n_frames_bl, n_neurons_bl] = size(T_bl);
+dur_bl = n_frames_bl / fs_bl;
+
+if match_inj
+    ul_inj_eff = dur_bl;
+    uf_inj_eff = 0;
+    crop_inj = (sk_inj > 0) || (isfinite(ul_inj_eff) && ul_inj_eff > 0);
+    if crop_inj
+        T_inj = extract_apply_time_window_T(T_inj, fs_inj, sk_inj, ul_inj_eff, uf_inj_eff);
+    end
+else
+    crop_inj = (uf_inj > 0) || (sk_inj > 0) || (isfinite(ul_inj) && ul_inj > 0);
+    if crop_inj
+        T_inj = extract_apply_time_window_T(T_inj, fs_inj, sk_inj, ul_inj, uf_inj);
+    end
 end
+
 if crop_bl || crop_inj
     [n_frames_bl,  n_neurons_bl]  = size(T_bl);
     [n_frames_inj, n_neurons_inj] = size(T_inj);
     dur_bl  = n_frames_bl  / fs_bl;
     dur_inj = n_frames_inj / fs_inj;
+    bl_lbl = extract_time_window_label(sk_bl, ul_bl, uf_bl);
+    if match_inj
+        inj_lbl = sprintf('last %.2f s (matched to baseline length)', dur_bl);
+    else
+        inj_lbl = extract_time_window_label(sk_inj, ul_inj, uf_inj);
+    end
     trunc_note = sprintf([' | Time crop — Baseline: %s (was %.1f s → now %.1f s) | ' ...
         'Injection: %s (was %.1f s → now %.1f s)'], ...
-        extract_time_window_label(sk_bl, ul_bl), dur_bl_full, dur_bl, ...
-        extract_time_window_label(sk_inj, ul_inj), dur_inj_full, dur_inj);
+        bl_lbl, dur_bl_full, dur_bl, inj_lbl, dur_inj_full, dur_inj);
     fprintf('  After time crop:%s\n\n', trunc_note);
 else
     fprintf('\n');
@@ -590,8 +613,13 @@ else
 end
 end
 
-function s = extract_time_window_label(skip_sec, use_last_sec)
-if skip_sec <= 0 && (~isfinite(use_last_sec) || use_last_sec <= 0)
+function s = extract_time_window_label(skip_sec, use_last_sec, use_first_sec)
+if nargin < 3 || isempty(use_first_sec)
+    use_first_sec = 0;
+end
+if use_first_sec > 0
+    s = sprintf('first %.0f s only', use_first_sec);
+elseif skip_sec <= 0 && (~isfinite(use_last_sec) || use_last_sec <= 0)
     s = 'full recording (no crop)';
 elseif skip_sec > 0 && (~isfinite(use_last_sec) || use_last_sec <= 0)
     s = sprintf('skip first %.0f s, rest to end', skip_sec);

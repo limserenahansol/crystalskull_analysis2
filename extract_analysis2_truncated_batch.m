@@ -1,7 +1,8 @@
 function extract_analysis2_truncated_batch()
 %EXTRACT_ANALYSIS2_TRUNCATED_BATCH  Same as extract_analysis2_batch, but:
-%   Baseline = full recording (no crop). Injection = last N seconds only (default 600 s),
-%   for ~10 min baseline vs ~10 min late-injection comparison.
+%   Injection = last N seconds where N = baseline duration after any BL time crop (per mouse).
+%   Default: full baseline file + matched injection tail (900 s BL → last 900 s INJ; 800 → last 800 s).
+%   Optional: set use_first_sec_bl so N = that cropped length (e.g. first 600 s BL → last 600 s INJ).
 %
 %   extract_analysis2_truncated_batch
 %
@@ -11,16 +12,18 @@ function extract_analysis2_truncated_batch()
 tic;
 
 %% ========== CONFIG ======================================================
-base_dir = '\\stg-tnr50a1.stanford.edu\crystal_skull\omer_hazon\morphine_20260408';
+base_dir = '\\stg-tnr50a1.stanford.edu\crystal_skull\omer_hazon\meltinonly';
 
 mirror_subfolders = {'mirror1path', 'mirror2path'};
 baseline_folders = {'Baseline'};
 
-out_root = 'C:\Users\hsollim\Documents\MATLAB\MATLAB\2p\extract_figures_batch_morphin_truncated';
+out_root = 'C:\Users\hsollim\Documents\MATLAB\MATLAB\2p\extract_figures_batch_meltinonly_truncated';
 
 mouse_ids_only = {};
 
-inj_last_sec = 600;  % last 10 min of injection only; baseline uncropped
+% Optional: uncomment to use only the first N seconds of baseline; injection tail length N matches that.
+% bl_cap_sec = 600;
+% use_first_sec_bl in params below = bl_cap_sec
 
 params = struct( ...
     'z_thresh', 2, ...
@@ -33,7 +36,8 @@ params = struct( ...
     'skip_first_sec_bl', 0, ...
     'use_last_sec_bl', inf, ...
     'skip_first_sec_inj', 0, ...
-    'use_last_sec_inj', inj_last_sec);
+    'use_last_sec_inj', inf, ...
+    'match_inj_last_to_baseline_dur', true);
 %% ========================================================================
 
 close all;
@@ -67,16 +71,18 @@ for mi = 1:numel(mouse_ids_only)
             bl_path  = fullfile(mouse_root, bl_folder, mirror_name);
             inj_path = fullfile(mouse_root, 'Injection', mirror_name);
 
-            if ~session_pair_ready(bl_path, inj_path)
-                fprintf('SKIP  %s / %s / %s  (missing folder, cell_map.png, or resolved .mat files)\n', ...
-                    mouse_id, bl_folder, mirror_name);
+            [ready, skip_reason] = session_pair_ready(bl_path, inj_path);
+            if ~ready
+                % Log line names the session key; failure may be on INJ even when BL folder is complete.
+                fprintf('SKIP  %s / %s / %s\n  Reason: %s\n  BL:  %s\n  INJ: %s\n', ...
+                    mouse_id, bl_folder, mirror_name, skip_reason, bl_path, inj_path);
                 n_skip = n_skip + 1;
                 continue;
             end
 
-            out_tag = sprintf('%s_%s_%s_BLfull_INJlast%ds', mouse_id, bl_folder, mirror_name, inj_last_sec);
+            out_tag = sprintf('%s_%s_%s_INJlastMatchBLdur', mouse_id, bl_folder, mirror_name);
             out_dir = fullfile(out_root, out_tag);
-            run_id  = sprintf('%s · %s · %s · BL full · INJ last %ds', mouse_id, bl_folder, mirror_name, inj_last_sec);
+            run_id  = sprintf('%s · %s · %s · INJ last window = baseline duration', mouse_id, bl_folder, mirror_name);
 
             fprintf('\n-------- RUN %s --------\n', out_tag);
             try
@@ -114,19 +120,54 @@ for i = 1:numel(d)
 end
 end
 
-function tf = session_pair_ready(bl_path, inj_path)
+function [tf, reason] = session_pair_ready(bl_path, inj_path)
+%SESSION_PAIR_READY  True only if BL+INJ mirror folders exist, cell_map.png present, mats resolved.
 tf = false;
-if exist(bl_path, 'dir') ~= 7 || exist(inj_path, 'dir') ~= 7
+reason = '';
+if exist(bl_path, 'dir') ~= 7
+    reason = sprintf('Baseline mirror folder missing: %s', bl_path);
+    return;
+end
+if exist(inj_path, 'dir') ~= 7
+    reason = sprintf('Injection mirror folder missing: %s', inj_path);
     return;
 end
 if exist(fullfile(bl_path, 'cell_map.png'), 'file') ~= 2
+    reason = sprintf('Baseline mirror has no cell_map.png (%s)', bl_path);
     return;
 end
 if exist(fullfile(inj_path, 'cell_map.png'), 'file') ~= 2
+    reason = sprintf('Injection mirror has no cell_map.png (%s)', inj_path);
     return;
 end
 Rb = extract_resolve_extract_files(bl_path);
 Ri = extract_resolve_extract_files(inj_path);
-tf = ~isempty(Rb.frr) && ~isempty(Rb.ds_ext) && ~isempty(Rb.summary) ...
-    && ~isempty(Ri.frr) && ~isempty(Ri.ds_ext) && ~isempty(Ri.summary);
+miss_b = missing_extract_labels(Rb);
+miss_i = missing_extract_labels(Ri);
+if ~isempty(miss_b)
+    reason = sprintf('Baseline mats unresolved (%s): need %s', bl_path, miss_b);
+    return;
+end
+if ~isempty(miss_i)
+    reason = sprintf('Injection mats unresolved (%s): need %s', inj_path, miss_i);
+    return;
+end
+tf = true;
+reason = '';
+end
+
+function s = missing_extract_labels(R)
+% Names expected by extract_resolve_extract_files (frr, ds_ext, summary).
+need = {'frr', 'ds_ext', 'summary'};
+miss = {};
+for k = 1:numel(need)
+    if isempty(R.(need{k}))
+        miss{end+1} = need{k}; %#ok<AGROW>
+    end
+end
+if isempty(miss)
+    s = '';
+else
+    s = strjoin(miss, ', ');
+end
 end

@@ -1,22 +1,32 @@
-function T = extract_apply_time_window_T(T, fs, skip_first_sec, use_last_sec)
+function T = extract_apply_time_window_T(T, fs, skip_first_sec, use_last_sec, use_first_sec)
 %EXTRACT_APPLY_TIME_WINDOW_T  Crop fluorescence matrix T (frames × neurons) in time.
 %
 %   T = extract_apply_time_window_T(T, fs, skip_first_sec, use_last_sec)
+%   T = extract_apply_time_window_T(..., use_first_sec)  optional 5th arg
+%
+%   use_first_sec — if > 0, keep only the FIRST this many seconds (from frame 1).
+%                   Takes precedence over skip_first_sec / use_last_sec for that call.
+%                   Use for e.g. first 10 min baseline while injection uses last 10 min.
 %
 %   skip_first_sec  — drop this many seconds from the start (0 = none).
 %   use_last_sec    — after that, keep only the last this many seconds of the
 %                     remainder. Inf or <=0 means keep the entire remainder.
-%
-%   Example (symmetric crop on both traces in older scripts): skip=600, use_last=600.
-%
-%   Example (injection only, last 10 min): skip_first_sec_inj=0, use_last_sec_inj=600
-%            in extract_resolve_time_window_params / extract_analysis2_core — baseline
-%            stays full; injection uses this helper with skip=0, use_last=600.
+
+if nargin < 5 || isempty(use_first_sec)
+    use_first_sec = 0;
+end
 
 [nf, ~] = size(T);
 fs = double(fs);
 if numel(fs) > 1
     fs = fs(1);
+end
+
+use_first_sec = double(use_first_sec);
+if use_first_sec > 0
+    take = min(nf, max(1, round(use_first_sec * fs)));
+    T = T(1:take, :);
+    return;
 end
 
 skip_first_sec = double(skip_first_sec);

@@ -7,7 +7,8 @@ function m = extract_session_metrics(session_mirror_path, params, phase)
 %   session_mirror_path — folder containing resolved *moco_frr.mat, etc.
 %
 %   params — z_thresh, time_bin, n_pc, n_corr_sample, frame_px, plus either:
-%     • Per-arm: skip_first_sec_bl, use_last_sec_bl, skip_first_sec_inj, use_last_sec_inj
+%     • Per-arm: skip_first_sec_bl, use_last_sec_bl, use_first_sec_bl,
+%       skip_first_sec_inj, use_last_sec_inj, use_first_sec_inj
 %     • Legacy symmetric: skip_first_sec, use_last_sec (both arms)
 %
 %   phase — when using per-arm params from extract_cohort_delta_pipeline, pass
@@ -25,28 +26,35 @@ time_bin = getp(params, 'time_bin', 1);
 n_pc     = getp(params, 'n_pc', 10);
 n_corr_sample = getp(params, 'n_corr_sample', 500);
 
-[sk_bl, ul_bl, sk_inj, ul_inj] = extract_resolve_time_window_params(params);
+[sk_bl, ul_bl, sk_inj, ul_inj, uf_bl, uf_inj] = extract_resolve_time_window_params(params);
 has_split = isfield(params, 'skip_first_sec_bl') || isfield(params, 'use_last_sec_bl') ...
-    || isfield(params, 'skip_first_sec_inj') || isfield(params, 'use_last_sec_inj');
+    || isfield(params, 'use_first_sec_bl') ...
+    || isfield(params, 'skip_first_sec_inj') || isfield(params, 'use_last_sec_inj') ...
+    || isfield(params, 'use_first_sec_inj');
 
 if nargin >= 3 && ~isempty(phase) && strcmpi(phase, 'baseline')
     skip_first_sec = sk_bl;
     use_last_sec   = ul_bl;
+    use_first_sec  = uf_bl;
 elseif nargin >= 3 && ~isempty(phase) && strcmpi(phase, 'injection')
     skip_first_sec = sk_inj;
     use_last_sec   = ul_inj;
+    use_first_sec  = uf_inj;
 elseif isempty(phase) && has_split
     low = lower(strrep(session_mirror_path, '\', '/'));
     if contains(low, 'injection')
         skip_first_sec = sk_inj;
         use_last_sec   = ul_inj;
+        use_first_sec  = uf_inj;
     else
         skip_first_sec = sk_bl;
         use_last_sec   = ul_bl;
+        use_first_sec  = uf_bl;
     end
 else
     skip_first_sec = getp(params, 'skip_first_sec', 0);
     use_last_sec   = getp(params, 'use_last_sec', inf);
+    use_first_sec  = 0;
 end
 
 R = extract_resolve_extract_files(session_mirror_path);
@@ -67,8 +75,8 @@ fs = fs(1);
 [n_frames, n_neurons] = size(T);
 dur = n_frames / fs;
 
-if skip_first_sec > 0 || (isfinite(use_last_sec) && use_last_sec > 0)
-    T = extract_apply_time_window_T(T, fs, skip_first_sec, use_last_sec);
+if use_first_sec > 0 || skip_first_sec > 0 || (isfinite(use_last_sec) && use_last_sec > 0)
+    T = extract_apply_time_window_T(T, fs, skip_first_sec, use_last_sec, use_first_sec);
     [n_frames, n_neurons] = size(T);
     dur = n_frames / fs;
 end

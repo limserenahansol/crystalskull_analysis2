@@ -5,14 +5,13 @@ function extract_analysis2_batch()
 %
 % Layout:
 %   base_dir/
-%     1014m01b/
-%       Baseline/mirror1path/   (*_moco_frr.mat, *_moco_ds_pre_ext.mat, *_summary.mat, cell_map.png)
+%     CS1014-1b/
+%       Baseline/mirror1path/   (M_moco_frr.mat, M_moco_ds_ext.mat, M_summary.mat, cell_map.png)
 %       Injection/mirror1path/
-%     1014m02w/
-%       Baseline/ ...  and optionally Baseline2/ ...
-%       Injection/ ...
+%       Baseline/mirror2path/
+%       Injection/mirror2path/
 %
-% Outputs: fullfile(out_root, '<mouseID>_<baselineFolder>_<mirrorName>')/
+% Outputs: fullfile(out_root, '<mouseID>_<mirrorName>')/
 %
 % Edit CONFIG below, then run: extract_analysis2_batch
 %
@@ -25,12 +24,7 @@ base_dir = '\\stg-tnr50a1.stanford.edu\crystal_skull\omer_hazon\morphine_2026040
 
 mirror_subfolders = {'mirror1path', 'mirror2path'};
 
-% Condition folder names on the baseline side (each paired with Injection/<mirror>)
-baseline_folders = {'Baseline'};
-% e.g. 1014m02w with a second baseline session:
-% baseline_folders = {'Baseline', 'Baseline2'};
-
-out_root = 'C:\Users\hsollim\Documents\MATLAB\MATLAB\2p\extract_figures_batch_morphin';
+out_root = 'C:\Users\hsollim\Documents\MATLAB\MATLAB\2p\extract_figures_batch';
 
 % If empty: auto-discover subfolders of base_dir that contain Baseline + Injection.
 mouse_ids_only = {};
@@ -47,6 +41,8 @@ params = struct( ...
 
 close all;
 clc;
+
+req_files = {'M_moco_frr.mat', 'M_moco_ds_ext.mat', 'M_summary.mat', 'cell_map.png'};
 
 if isempty(mouse_ids_only)
     mouse_ids_only = discover_mouse_folders(base_dir);
@@ -68,35 +64,30 @@ for mi = 1:numel(mouse_ids_only)
     mouse_id = mouse_ids_only{mi};
     mouse_root = fullfile(base_dir, mouse_id);
 
-    for bi = 1:numel(baseline_folders)
-        bl_folder = baseline_folders{bi};
+    for ki = 1:numel(mirror_subfolders)
+        mirror_name = mirror_subfolders{ki};
+        bl_path  = fullfile(mouse_root, 'Baseline',  mirror_name);
+        inj_path = fullfile(mouse_root, 'Injection', mirror_name);
 
-        for ki = 1:numel(mirror_subfolders)
-            mirror_name = mirror_subfolders{ki};
-            bl_path  = fullfile(mouse_root, bl_folder, mirror_name);
-            inj_path = fullfile(mouse_root, 'Injection', mirror_name);
-
-            if ~session_pair_ready(bl_path, inj_path)
-                fprintf('SKIP  %s / %s / %s  (missing folder, cell_map.png, or resolved .mat files)\n', ...
-                    mouse_id, bl_folder, mirror_name);
-                n_skip = n_skip + 1;
-                continue;
-            end
-
-            out_tag = sprintf('%s_%s_%s', mouse_id, bl_folder, mirror_name);
-            out_dir = fullfile(out_root, out_tag);
-            run_id  = sprintf('%s · %s · %s', mouse_id, bl_folder, mirror_name);
-
-            fprintf('\n-------- RUN %s --------\n', out_tag);
-            try
-                extract_analysis2_core(bl_path, inj_path, out_dir, run_id, params);
-                n_ok = n_ok + 1;
-            catch ME
-                warning('extract_analysis2_batch:RunFailed', 'FAILED %s: %s', out_tag, ME.message);
-                n_fail = n_fail + 1;
-            end
-            close all;
+        if ~data_ready(bl_path, inj_path, req_files)
+            fprintf('SKIP  %s / %s  (missing files under BL or INJ)\n', mouse_id, mirror_name);
+            n_skip = n_skip + 1;
+            continue;
         end
+
+        out_tag = sprintf('%s_%s', mouse_id, mirror_name);
+        out_dir = fullfile(out_root, out_tag);
+        run_id  = sprintf('%s · %s', mouse_id, mirror_name);
+
+        fprintf('\n-------- RUN %s --------\n', out_tag);
+        try
+            extract_analysis2_core(bl_path, inj_path, out_dir, run_id, params);
+            n_ok = n_ok + 1;
+        catch ME
+            warning('extract_analysis2_batch:RunFailed', 'FAILED %s: %s', out_tag, ME.message);
+            n_fail = n_fail + 1;
+        end
+        close all;
     end
 end
 
@@ -123,19 +114,16 @@ for i = 1:numel(d)
 end
 end
 
-function tf = session_pair_ready(bl_path, inj_path)
+function tf = data_ready(bl_path, inj_path, req_files)
 tf = false;
 if exist(bl_path, 'dir') ~= 7 || exist(inj_path, 'dir') ~= 7
     return;
 end
-if exist(fullfile(bl_path, 'cell_map.png'), 'file') ~= 2
-    return;
+for j = 1:numel(req_files)
+    f = req_files{j};
+    if exist(fullfile(bl_path, f), 'file') ~= 2 || exist(fullfile(inj_path, f), 'file') ~= 2
+        return;
+    end
 end
-if exist(fullfile(inj_path, 'cell_map.png'), 'file') ~= 2
-    return;
-end
-Rb = extract_resolve_extract_files(bl_path);
-Ri = extract_resolve_extract_files(inj_path);
-tf = ~isempty(Rb.frr) && ~isempty(Rb.ds_ext) && ~isempty(Rb.summary) ...
-    && ~isempty(Ri.frr) && ~isempty(Ri.ds_ext) && ~isempty(Ri.summary);
+tf = true;
 end

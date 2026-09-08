@@ -1,9 +1,7 @@
-% EXTRACT: Baseline vs Injection with matched 10 min vs 10 min logic:
-%   • Baseline trace: UNCHANGED (full ~10 min recording — no skip, no crop).
-%   • Injection trace: LAST 10 minutes only (so long morphine/post sessions compare
-%     to the same wall-clock length as baseline).
-%
-% Uses per-arm params: use_last_sec_inj only; baseline left full.
+% EXTRACT: Baseline vs Injection with matched duration logic:
+%   • Baseline: full recording after optional BL crops (skip / last / first).
+%   • Injection: LAST N seconds where N = that baseline duration (match_inj_last_to_baseline_dur).
+%     Example: 900 s baseline → last 900 s injection; 800 s baseline → last 800 s injection.
 %
 % Requires: extract_analysis2_core.m, extract_resolve_time_window_params.m,
 %           extract_apply_time_window_T.m on the path.
@@ -17,9 +15,7 @@ bl_path  = fullfile(base_dir, 'Baseline',  'mirror2path');
 inj_path = fullfile(base_dir, 'Injection', 'mirror2path');
 out_dir  = 'C:\Users\hsollim\Documents\MATLAB\MATLAB\2p\extract_figures_truncated';
 
-inj_last_sec = 600;  % last 10 min of injection only (baseline stays full)
-
-run_id = sprintf('CS1014-1b · mirror2path · BL_full_INJ_last%ds', inj_last_sec);
+run_id = 'CS1014-1b · mirror2path · INJ last = baseline duration';
 
 params = struct( ...
     'z_thresh', 2, ...
@@ -32,7 +28,8 @@ params = struct( ...
     'skip_first_sec_bl', 0, ...
     'use_last_sec_bl', inf, ...
     'skip_first_sec_inj', 0, ...
-    'use_last_sec_inj', inj_last_sec);
+    'use_last_sec_inj', inf, ...
+    'match_inj_last_to_baseline_dur', true);
 
 extract_analysis2_core(bl_path, inj_path, out_dir, run_id, params);
 

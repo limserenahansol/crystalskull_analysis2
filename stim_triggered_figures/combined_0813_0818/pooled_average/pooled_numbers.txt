@@ -1,0 +1,9 @@
+Pooled 13 Aug + 18 Aug peri-poke
+movies=18 (0813=12, 0818=6)
+neurons=43156
+pokes=1098
+movie-mean %exc=8.80  %inh=28.19
+neuron-pooled %exc=8.62  %inh=27.59
+movies p<0.05: 14 / 18
+ITI median pooled=5.242 s
+pop z at t=0 (pooled mean)=0.0162

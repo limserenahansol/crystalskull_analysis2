@@ -1,0 +1,5 @@
+tag,neuron_id,kind,amp,centroid_x
+E1 anterior,423,excited,1.81799,1522.00
+E2 posterior,2913,excited,1.08309,916.73
+I1 anterior,2640,inhibited,-0.50643,1181.34
+I2 posterior,3922,inhibited,-0.66076,748.05

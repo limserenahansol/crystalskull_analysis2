@@ -1,0 +1,19 @@
+m201_d250813_s00cage4978415_m2c-fps33-mirror2_moco | Stimulus-triggered (facial poke) analysis
+==============================================================================
+Onset event field (t=0)                  peak_idx
+Neurons                                  2889
+Frames                                   10000
+Frame rate (Hz)                          33.000
+Pokes detected                           57
+Pokes used (peri-window in range)        56
+Inter-poke interval s (med, range)       5.29 (5.12-5.42)
+Peri window                              [-2.00 3.00] s
+Baseline window                          [-2.00 0.00] s
+Response window                          [0.40 1.20] s
+
+--- Responsiveness ---
+Excited neurons                          265 (9.2%)
+Inhibited neurons                        890 (30.8%)
+Mean response amp (post-pre, z)          0.0202
+Population resp (post-pre, z)            0.0202
+Population resp vs base p                6.129e-03
