@@ -148,6 +148,20 @@ Pooled n=18 figures: **`write_n18_clean_figs.m`**, **`extract_stim_pool_days.m`*
 
 **`extract_stim_example_neurons.m`** picks 4 cells per recording (strongest significant excited and inhibited in the anterior and posterior halves), writes EXTRACT traces with poke times, peri-poke STA, and contrast-stretched crystal-skull FOV maps (P left, A right; mirror2 flipped). Outputs: `stim_triggered_figures/combined_0813_0818/example_neurons/` including `CrystalSkull_face_poke_example_traces_maps_n18.pptx`.
 
+## Allen CCF registration (dorsal / top-down)
+
+Register each crystal-skull FOV to the **Allen CCFv3 dorsal surface** (not a 3-D volume slice). Details: [`ccf_registration/README.md`](ccf_registration/README.md).
+
+```matlab
+addpath('ccf_registration')
+ccf_register_facepoke_n18                 % click landmarks per FOV (resume-safe)
+ccf_register_assisted                     % fewer clicks once midline is cached
+ccf_n18_atlas_gallery
+ccf_label_facepoke_n18                    % Allen area + bregma AP/ML per cell
+```
+
+The atlas is `ccf_registration/allen_dorsal_map.mat` (25 µm, A-up). Lab maps stay **P left / A right**; `ccf_register_fov` rotates the atlas to match while you click. Fitted transforms are FOV pixels → native A-up CCF. A free check: face-poke excitation should land in mouth / nose / barrel cortex (`SSp-n`, `SSp-m`, `SSp-bfd`).
+
 ## Outputs
 
 | File | Description |

@@ -15,6 +15,17 @@ __pycache__/
 # Exploratory / local-only stim runs
 stim_triggered_figures/_smoketest/
 
+# CCF cached full-res FOVs (regenerate with ccf_cache_fov_images)
+ccf_registration/cache/*.mat
+ccf_registration/cache/poke_*.png
+ccf_registration/cache/mel_*.png
+ccf_registration/cache/_inspect_vasc.png
+ccf_dorsal_output/
+
+# Office lock files
+~$*.pptx
+~$*.docx
+
 # OS
 .DS_Store
 Thumbs.db
