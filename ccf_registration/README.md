@@ -62,6 +62,16 @@ SSp / RSP / VIS — not the olfactory bulbs — so click the midline sinus, not 
 A free check after labelling: face-poke excitation should pile up in mouth / nose / barrel
 cortex (`SSp-n`, `SSp-m`, `SSp-bfd`). If the peak is in MOs or VISp, redo that FOV.
 
+## Superimposed figures (all FOVs on CCF)
+
+After transforms exist:
+
+```matlab
+ccf_plot_superimposed
+```
+
+Writes `ccf_registration/figures/`. Start with `fig_ccf_poke_superimposed.png` (coverage + mean poke response). Crystal-skull windows cover most of dorsal cortex, so outlines sit near the atlas edge; the useful maps are coverage and the red/blue response overlay.
+
 ## Three ways to register, worst to best
 
 ### 1. `mode="bregma"` — two clicks

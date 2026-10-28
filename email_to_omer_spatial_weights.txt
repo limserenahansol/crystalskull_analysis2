@@ -1,0 +1,20 @@
+Hi Omer,
+
+Thank you again for the EXTRACT outputs and estimated_stim_timing for 20250813 (and 20250818).
+
+We aligned the traces to your peak_idx / peak_pre_idx / peak_post_idx and the peri-poke population response looks clear. What we cannot make yet is a spatial map of which cortical locations are excited vs inhibited after each poke.
+
+In the *_moco_ds_pre_ext.mat files, temporal_weights load fine (frames x neurons), but spatial_weights is saved as an ndSparse object. MATLAB then cannot reconstruct it (it comes in as a small uint32), so we cannot project per-neuron poke responses back onto the FOV.
+
+Could you re-export the spatial footprints in a standard format, for 20250813 and 20250818? Any of these would work:
+
+1. MATLAB sparse double, pixels x neurons, plus the FOV size (we assume 2304 x 2304), or
+2. CSC arrays like in moco_frr.mat: /S/ir, /S/jc, /S/data (0-based ir is fine), or
+3. A cell_map.png / spatial_weights.mat saved with a regular sparse S.
+
+We do not need the full-rate movies again — only S so we can plot “response amplitude (post-poke minus pre-poke)” on the cortex.
+
+Happy to use whatever naming is easiest on your side.
+
+Thank you,
+Hansol

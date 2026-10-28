@@ -1,0 +1,34 @@
+{
+  "timestamp_previews": {
+    "\\\\stg-tnr50a1.stanford.edu\\crystal_skull\\20260408\\behavior\\1014m01b_16mWpCM2_base_20260408_behavior_timestamp.csv": [
+      "FrameID, Timestamp in \"HH:MM:SS:MS\", Timestamp in s",
+      "0, 13:54:39:579, 50079.579000",
+      "1, 13:54:39:607, 50079.607000",
+      "2, 13:54:39:636, 50079.636000"
+    ],
+    "\\\\stg-tnr50a1.stanford.edu\\crystal_skull\\20260408\\behavior\\1014m01b_16mWpCM2_inject_20260408_behavior_timestamp.csv": [
+      "FrameID, Timestamp in \"HH:MM:SS:MS\", Timestamp in s",
+      "0, 14:18:24:840, 51504.840000",
+      "1, 14:18:24:868, 51504.868000",
+      "2, 14:18:24:897, 51504.897000"
+    ],
+    "\\\\stg-tnr50a1.stanford.edu\\crystal_skull\\20260408\\behavior\\1014m02w_16mWpCM2_base2_20260408_behavior_timestamp.csv": [
+      "FrameID, Timestamp in \"HH:MM:SS:MS\", Timestamp in s",
+      "0, 12:35:50:069, 45350.069000",
+      "1, 12:35:50:097, 45350.097000",
+      "2, 12:35:50:126, 45350.126000"
+    ],
+    "\\\\stg-tnr50a1.stanford.edu\\crystal_skull\\20260408\\behavior\\1014m02w_16mWpCM2_base_20260408_behavior_timestamp.csv": [
+      "FrameID, Timestamp in \"HH:MM:SS:MS\", Timestamp in s",
+      "0, 12:17:04:964, 44224.964000",
+      "1, 12:17:04:993, 44224.993000",
+      "2, 12:17:05:022, 44225.022000"
+    ],
+    "\\\\stg-tnr50a1.stanford.edu\\crystal_skull\\20260408\\behavior\\1014m02w_16mWpCM2_inject_20260408_behavior_timestamp.csv": [
+      "FrameID, Timestamp in \"HH:MM:SS:MS\", Timestamp in s",
+      "0, 13:04:10:068, 47050.068000",
+      "1, 13:04:10:096, 47050.096000",
+      "2, 13:04:10:125, 47050.125000"
+    ]
+  }
+}

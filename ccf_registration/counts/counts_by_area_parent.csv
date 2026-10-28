@@ -1,0 +1,70 @@
+condition,area_group,n_cells,n_excited,n_inhibited,n_nonsig,pct_excited,pct_inhibited
+Face poke,VIS,16937,1217,5329,10391,7.19,31.46
+Face poke,MO,11378,1309,2924,7145,11.50,25.70
+Face poke,SSp,10432,837,2509,7086,8.02,24.05
+Face poke,RSP,3479,234,912,2333,6.73,26.21
+Face poke,SSs,422,73,94,255,17.30,22.27
+Face poke,AUD,233,16,61,156,6.87,26.18
+Face poke,SCzo,78,15,18,45,19.23,23.08
+Face poke,TEa,39,3,10,26,7.69,25.64
+Face poke,ICe,34,2,8,24,5.88,23.53
+Face poke,MB,28,3,11,14,10.71,39.29
+Face poke,bic,18,0,7,11,0.00,38.89
+Face poke,SIM,8,0,5,3,0.00,62.50
+Face poke,ENTm,6,0,1,5,0.00,16.67
+Face poke,OLF,5,0,2,3,0.00,40.00
+Face poke,MOB,2,0,0,2,0.00,0.00
+Face poke,ACAd,2,1,0,1,50.00,0.00
+Face poke,onl,2,0,0,2,0.00,0.00
+Face poke,FRP,1,0,0,1,0.00,0.00
+Face poke,DEC,1,0,1,0,0.00,100.00
+Melittin,VIS,29191,8797,17285,3109,30.14,59.21
+Melittin,SSp,20953,5242,14318,1393,25.02,68.33
+Melittin,MO,16166,6347,8394,1425,39.26,51.92
+Melittin,RSP,9487,1989,6699,799,20.97,70.61
+Melittin,AUD,1514,181,1213,120,11.96,80.12
+Melittin,SSs,1447,244,1084,119,16.86,74.91
+Melittin,TEa,553,34,481,38,6.15,86.98
+Melittin,SCzo,535,49,447,39,9.16,83.55
+Melittin,SIM,159,30,110,19,18.87,69.18
+Melittin,MB,159,14,131,14,8.81,82.39
+Melittin,ICe,117,3,109,5,2.56,93.16
+Melittin,MOB,79,11,62,6,13.92,78.48
+Melittin,OLF,65,11,48,6,16.92,73.85
+Melittin,ACAd,55,22,23,10,40.00,41.82
+Melittin,FRP,45,11,31,3,24.44,68.89
+Melittin,ENTl,42,0,41,1,0.00,97.62
+Melittin,bic,37,5,29,3,13.51,78.38
+Melittin,PL,27,3,23,1,11.11,85.19
+Melittin,ENTm,10,0,10,0,0.00,100.00
+Melittin,root,8,0,7,1,0.00,87.50
+Melittin,VISC,7,0,7,0,0.00,100.00
+Melittin,ICd,3,0,3,0,0.00,100.00
+Melittin,"CUL4, 5",3,0,3,0,0.00,100.00
+Melittin,PAR,2,0,2,0,0.00,100.00
+Melittin+morphine,VIS,21715,7224,12580,1911,33.27,57.93
+Melittin+morphine,SSp,15987,4147,10931,909,25.94,68.37
+Melittin+morphine,MO,12891,5495,6277,1119,42.63,48.69
+Melittin+morphine,RSP,5537,1645,3280,612,29.71,59.24
+Melittin+morphine,AUD,1835,299,1426,110,16.29,77.71
+Melittin+morphine,SSs,1698,364,1224,110,21.44,72.08
+Melittin+morphine,TEa,574,89,445,40,15.51,77.53
+Melittin+morphine,SIM,327,98,203,26,29.97,62.08
+Melittin+morphine,SCzo,277,48,207,22,17.33,74.73
+Melittin+morphine,MB,125,21,83,21,16.80,66.40
+Melittin+morphine,ICe,117,19,86,12,16.24,73.50
+Melittin+morphine,bic,54,17,32,5,31.48,59.26
+Melittin+morphine,FRP,49,15,25,9,30.61,51.02
+Melittin+morphine,MOB,42,7,29,6,16.67,69.05
+Melittin+morphine,ENTl,37,3,31,3,8.11,83.78
+Melittin+morphine,OLF,33,9,15,9,27.27,45.45
+Melittin+morphine,PL,28,3,20,5,10.71,71.43
+Melittin+morphine,ENTm,18,0,17,1,0.00,94.44
+Melittin+morphine,VISC,13,1,12,0,7.69,92.31
+Melittin+morphine,ACAd,13,5,7,1,38.46,53.85
+Melittin+morphine,root,9,2,7,0,22.22,77.78
+Melittin+morphine,ECT1,3,0,3,0,0.00,100.00
+Melittin+morphine,PAR,3,0,3,0,0.00,100.00
+Melittin+morphine,ICd,2,0,1,1,0.00,50.00
+Melittin+morphine,PFL,2,0,2,0,0.00,100.00
+Melittin+morphine,DEC,2,0,2,0,0.00,100.00

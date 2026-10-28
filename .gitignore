@@ -26,6 +26,28 @@ ccf_dorsal_output/
 ~$*.pptx
 ~$*.docx
 
+# Grimace demo (regenerate with grimace_demo)
+grimace/demo_output/
+grimace/models/
+grimace/grimace_output/
+
 # OS
 .DS_Store
 Thumbs.db
+
+# --- added 2026-10-28, CCF region + behaviour pipeline ---
+
+# PainFace re-encoded clips, ~700 MB of mouse face video.
+# Rebuild with grimace/prepare_painface_video.py from the Stanford share.
+behavior_sync/painface_upload/
+
+# Extracted preview frames (54 MB of PNGs).
+# Rebuild with behavior_sync/ccf_extract_face_frames.py
+behavior_sync/frames/
+
+# Slide layout proofs - scratch output of final_deck/preview_deck.py
+final_deck/preview/
+final_deck/preview_7/
+final_deck/preview_add/
+final_deck/preview_4b/
+final_deck/_s7_panelC.png

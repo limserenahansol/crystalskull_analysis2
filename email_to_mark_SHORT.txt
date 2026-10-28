@@ -1,0 +1,18 @@
+Subject: Re: face poking crystal skull imaging result
+
+Hi Mark,
+
+Per-mouse stats are in the attached deck - 18 face-poke recordings, 4 mice, 43,156 cells: 8.6% excited
+vs 27.6% inhibited, the same ~3:1 direction in every animal, significant in 14/18. I can't name Allen
+areas yet because the crystal-skull FOVs aren't CCF-registered (all I can say is the anterior-excited /
+posterior-inhibited gradient, 18/18), and this dataset can't separate pain from touch from surprise -
+one stimulus delivered one way gives no contrast, so that needs an interleaved stimulus panel rather
+than more analysis. On drug: face poke has no arm at all, so I re-ran the old melittin data through the
+same pipeline, and morphine shifts the response toward less cortical suppression (27 -> 31% of cells
+above baseline, net population -8.5% -> -0.3%) - consistent in direction, but only a trend at the animal
+level (n = 4 vs 2 mice, p = 0.13, no vehicle arm). Since the two paradigms lead to different
+experimental plans, I've paused crystal-skull imaging until you and Greg confirm which one we build the
+SBI work around.
+
+Best,
+Hansol

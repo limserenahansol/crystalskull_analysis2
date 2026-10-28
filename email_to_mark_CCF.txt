@@ -1,0 +1,17 @@
+Subject: Re: face poking crystal skull imaging result - Allen CCF registration added
+
+Dear Mark,
+
+I have now registered the crystal-skull FOVs to the Allen CCF and added that to the deck -
+it is landmark-based rather than a perfect alignment, so area-level labels (SSp vs VIS vs
+MO) are reliable while sub-area ones (SSp-bfd vs SSp-m) are approximate. See from slide 15
+onward for the spatial layout after registration. Face poking: excitation concentrates in
+somatosensory and motor cortex (SSs, SSp-n, MOp, MOs) and inhibition in visual areas, with
+the anterior-excited / posterior-inhibited gradient holding in 18/18 recordings (8.6%
+excited vs 27.6% inhibited, 43,156 cells). Melittin and morphine: melittin drives a
+cortex-wide drop in activity carrying the same anterior > posterior gradient, and morphine
+shifts it toward less suppression in almost every area, but with 4 recordings from 2 mice
+that comparison cannot be tested statistically, so I have kept it as a trend.
+
+Best,
+Hansol

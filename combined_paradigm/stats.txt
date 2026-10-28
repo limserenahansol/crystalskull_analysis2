@@ -1,0 +1,5 @@
+Face poke: n_rec=18 mice=5 cells=43156 exc=8.8+/-2.4% inh=28.2+/-4.6%
+Melittin: n_rec=8 mice=4 cells=81834 exc=27.2+/-3.9% inh=64.4+/-5.8%
+Melittin+morphine: n_rec=4 mice=2 cells=62533 exc=31.4+/-0.4% inh=60.6+/-2.3%
+net dF/F change: mel -8.5+/-10.1%  mel+mor -0.3+/-5.3%  p_rec=0.154 p_mouse=0.267
+UP-cell amplitude: mel 142+/-16%BL  mel+mor 136+/-15%BL  p=0.683

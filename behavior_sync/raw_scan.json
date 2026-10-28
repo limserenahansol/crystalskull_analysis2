@@ -1,0 +1,297 @@
+{
+ "20260408": {
+  "_files": [
+   [
+    "1014m01b_16mWpCM2_base_20260408.mp4",
+    696005946
+   ],
+   [
+    "1014m01b_16mWpCM2_base_20260408.zip",
+    6665648794
+   ],
+   [
+    "1014m01b_16mWpCM2_base_20260408_behavior_timestamp.csv",
+    723943
+   ],
+   [
+    "1014m01b_16mWpCM2_inject_20260408.mp4",
+    1619742962
+   ],
+   [
+    "1014m01b_16mWpCM2_inject_20260408.zip",
+    15708428517
+   ],
+   [
+    "1014m01b_16mWpCM2_inject_20260408_behavior_timestamp.csv",
+    1831413
+   ],
+   [
+    "1014m02w_16mWpCM2_base2_20260408.mp4",
+    646553897
+   ],
+   [
+    "1014m02w_16mWpCM2_base2_20260408.zip",
+    6583398927
+   ],
+   [
+    "1014m02w_16mWpCM2_base2_20260408_behavior_timestamp.csv",
+    723943
+   ],
+   [
+    "1014m02w_16mWpCM2_base_20260408.mp4",
+    895704658
+   ],
+   [
+    "1014m02w_16mWpCM2_base_20260408.zip",
+    6527571223
+   ],
+   [
+    "1014m02w_16mWpCM2_base_20260408_behavior_timestamp.csv",
+    723733
+   ],
+   [
+    "1014m02w_16mWpCM2_inject_20260408.mp4",
+    1716906422
+   ],
+   [
+    "1014m02w_16mWpCM2_inject_20260408.zip",
+    13125624811
+   ],
+   [
+    "1014m02w_16mWpCM2_inject_20260408_behavior_timestamp.csv",
+    1458943
+   ]
+  ]
+ },
+ "20260218": {
+  "1014m01b_19mWpCM2_base": {
+   "n_items": 21001,
+   "ext_counts": {
+    ".jpg": 21000,
+    ".db": 1
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_17012 14-18-08-437.jpg",
+    "Image_3217 14-11-34-285.jpg",
+    "Image_9394 14-14-30-775.jpg",
+    "Image_4476 14-12-10-257.jpg",
+    "Image_12250 14-15-52-376.jpg"
+   ],
+   "secs": 100.3
+  },
+  "1014m01b_19mWpCM2_inject1": {
+   "n_items": 42000,
+   "ext_counts": {
+    ".jpg": 42000
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_16420 14-32-57-628.jpg",
+    "Image_2039 14-26-06-724.jpg",
+    "Image_8810 14-29-20-192.jpg",
+    "Image_29483 14-39-10-877.jpg",
+    "Image_16934 14-33-12-314.jpg"
+   ],
+   "secs": 340.8
+  },
+  "1014m02w_19mWpCM2_base": {
+   "n_items": 21000,
+   "ext_counts": {
+    ".jpg": 21000
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_8673 12-28-53-642.jpg",
+    "Image_9577 12-29-19-473.jpg",
+    "Image_5264 12-27-16-236.jpg",
+    "Image_2588 12-25-59-773.jpg",
+    "Image_10821 12-29-55-018.jpg"
+   ],
+   "secs": 1.4
+  },
+  "1014m02w_19mWpCM2_inject": {
+   "n_items": 4687,
+   "ext_counts": {
+    ".jpg": 4686,
+    ".db": 1
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_1781 12-44-04-932.jpg",
+    "Image_2976 12-44-39-076.jpg",
+    "Image_786 12-43-36-501.jpg",
+    "Image_4319 12-45-17-450.jpg",
+    "Image_490 12-43-28-043.jpg"
+   ],
+   "secs": 0.3
+  },
+  "1014m02w_19mWpCM2_inject2": {
+   "n_items": 7600,
+   "ext_counts": {
+    ".jpg": 7600
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_7365 12-54-36-496.jpg",
+    "Image_6051 12-53-58-951.jpg",
+    "Image_3258 12-52-39-146.jpg",
+    "Image_2869 12-52-28-031.jpg",
+    "Image_4124 12-53-03-891.jpg"
+   ],
+   "secs": 0.5
+  },
+  "1014m02w_19mWpCM2_inject3": {
+   "n_items": 21000,
+   "ext_counts": {
+    ".jpg": 21000
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_2576 13-35-43-374.jpg",
+    "Image_16005 13-42-07-068.jpg",
+    "Image_1687 13-35-17-973.jpg",
+    "Image_12634 13-40-30-751.jpg",
+    "Image_3530 13-36-10-632.jpg"
+   ],
+   "secs": 1.4
+  },
+  "mouse1f_19mWpCM2_base_20260218": {
+   "n_items": 10501,
+   "ext_counts": {
+    ".jpg": 10501
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_4894 15-16-38-262.jpg",
+    "Image_2089 15-15-18-113.jpg",
+    "Image_9968 15-19-03-241.jpg",
+    "Image_4840 15-16-36-719.jpg",
+    "Image_6336 15-17-19-464.jpg"
+   ],
+   "secs": 0.8
+  },
+  "mouse1f_19mWpCM2_inject_20260218": {
+   "n_items": 41977,
+   "ext_counts": {
+    ".jpg": 41977
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_37758 15-46-00-735.jpg",
+    "Image_4024 15-29-56-853.jpg",
+    "Image_7448 15-31-34-691.jpg",
+    "Image_25987 15-40-24-407.jpg",
+    "Image_23709 15-39-19-319.jpg"
+   ],
+   "secs": 2.9
+  }
+ },
+ "20260219": {
+  "fcs_02041b_baseline_20260219": {
+   "n_items": 21000,
+   "ext_counts": {
+    ".jpg": 21000
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_20743 11-54-44-299.jpg",
+    "Image_17255 11-53-04-637.jpg",
+    "Image_14605 11-51-48-919.jpg",
+    "Image_1753 11-45-41-703.jpg",
+    "Image_15964 11-52-27-750.jpg"
+   ],
+   "secs": 48.0
+  },
+  "fcs_02041b_inject1_20260219": {
+   "n_items": 42000,
+   "ext_counts": {
+    ".jpg": 42000
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_37741 12-19-02-382.jpg",
+    "Image_41136 12-20-39-386.jpg",
+    "Image_33392 12-16-58-120.jpg",
+    "Image_17522 12-09-24-673.jpg",
+    "Image_5174 12-03-31-859.jpg"
+   ],
+   "secs": 65.9
+  },
+  "fcs_02042w_base_20260219": {
+   "n_items": 21000,
+   "ext_counts": {
+    ".jpg": 21000
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_17627 12-59-59-550.jpg",
+    "Image_12507 12-57-33-253.jpg",
+    "Image_9085 12-55-55-474.jpg",
+    "Image_9817 12-56-16-390.jpg",
+    "Image_20766 13-01-29-243.jpg"
+   ],
+   "secs": 2.4
+  },
+  "fcs_02042w_inject1_20260219": {
+   "n_items": 42000,
+   "ext_counts": {
+    ".jpg": 42000
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_8198 13-13-14-313.jpg",
+    "Image_1594 13-10-05-615.jpg",
+    "Image_6908 13-12-37-454.jpg",
+    "Image_1372 13-09-59-272.jpg",
+    "Image_33295 13-25-11-416.jpg"
+   ],
+   "secs": 328.6
+  },
+  "mouse2c_base_20260219": {
+   "n_items": 21007,
+   "ext_counts": {
+    ".jpg": 21007
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_18542 14-06-13-637.jpg",
+    "Image_16516 14-05-15-748.jpg",
+    "Image_9551 14-01-56-739.jpg",
+    "Image_19353 14-06-36-809.jpg",
+    "Image_19879 14-06-51-838.jpg"
+   ],
+   "secs": 133.9
+  },
+  "mouse2c_inject1_20260219": {
+   "n_items": 42001,
+   "ext_counts": {
+    ".jpg": 42000,
+    ".db": 1
+   },
+   "videos": [],
+   "csvs": [],
+   "sample": [
+    "Image_24265 14-27-03-010.jpg",
+    "Image_15149 14-22-42-542.jpg",
+    "Image_33791 14-31-35-193.jpg",
+    "Image_2522 14-16-41-755.jpg",
+    "Image_16404 14-23-18-401.jpg"
+   ],
+   "secs": 363.4
+  }
+ }
+}

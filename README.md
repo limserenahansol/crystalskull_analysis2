@@ -19,6 +19,7 @@ This repository provides a MATLAB pipeline that:
 
 | Document | Purpose |
 |----------|---------|
+| [**docs/CCF_REGION_PIPELINE.md**](docs/CCF_REGION_PIPELINE.md) | Allen CCF registration, per-cell area labels, region enrichment, the morphine arm, and the deck builders |
 | [**docs/METHODS.md**](docs/METHODS.md) | Definitions: dF/F, z-score, event rate, fraction active; bootstrap vs Wilcoxon; figure-numbering note |
 | [**docs/DATASET_STRUCTURE.md**](docs/DATASET_STRUCTURE.md) | EXTRACT file layout and HDF5 fields |
 | [**docs/FIGURE_LEGENDS.md**](docs/FIGURE_LEGENDS.md) | Copy-paste figure legend text |
@@ -189,6 +190,55 @@ With **batch mode**, each row above lives under **`out_root/<experiment_id>/`**.
 6. **Pairwise correlations** (500 neurons sampled)
 7. **PCA** on binned population activity
 8. **Spatial maps** = project mean dF/F and event rate onto FOV via `S`
+
+## Allen CCF registration and region-level analysis
+
+Every FOV is registered to the Allen CCFv3 dorsal-surface map **without manual
+landmarks** — the skull is removed, so bregma and lambda are not visible. A similarity
+transform is fitted from the FOV silhouette alone by maximising Dice overlap against
+the atlas cortex mask. All 30 recordings pass: Dice median 0.931 (0.912–0.942), fitted
+scale median 5.48 µm/px with a 1.05× spread.
+
+```matlab
+ccf_register_by_mask            % -> ccf_registration/transforms/*.mat (+ _qc.png)
+ccf_label_facepoke_n18          % -> ccf_registration/n18/cell_ccf_all.csv
+ccf_label_melittin              % -> ccf_registration/melittin_ccf/cell_ccf_all.csv
+```
+
+```bash
+cd final_deck
+python compute_stats.py && python compute_region_stats.py   # every slide number
+python make_final_figures.py && python make_region_figures.py
+python make_final_deck.py && python preview_deck.py         # deck + overflow check
+```
+
+**Read [docs/CCF_REGION_PIPELINE.md](docs/CCF_REGION_PIPELINE.md) before quoting any
+responsive-cell percentage.** The face-poke arm uses a within-cell trial-paired test
+(8.6 % excited / 27.6 % inhibited); the melittin arm cannot track cells across the
+injection and tests across time bins, which calls 91 % of cells responsive
+(28.3 % up / 63.0 % down). Those two sets of percentages are **not comparable to each
+other**. Comparisons within one arm, and enrichment ratios normalised by each arm's own
+cortex-wide rate, are fine.
+
+Decks are built with **python-pptx only** — never PowerPoint COM, which closes whatever
+the user has open.
+
+## Automated grimace (PainFace / GrimACE)
+
+Face videos are scored **outside** this repo (PainFace at painface.net, or the GrimACE app after craniotomy/implants). Then:
+
+```matlab
+addpath('grimace')
+G = grimace_load('painface_export.csv', 'Source', 'painface');
+M = grimace_metrics(G);                    % mean MGS, % high-grimace (McCoy 2024 bins)
+S = grimace_align_pokes(G, pokeTimes_s);   % peri-poke, same windows as neural STA
+grimace_plot(G, M, S, 'grimace_out');
+```
+
+13/18 Aug face-poke movies had no behavior camera. Melittin/morphine face videos
+are referenced (not copied) from `\\stg-tnr50a1.stanford.edu\crystal_skull\20260408\behavior`
+and `20260218` / `20260219`. Match table + GrimACE scoring: `grimace/build_behavior_manifest.py`,
+`grimace/score_grimace_videos.py`. See `grimace/README.md`.
 
 ## Statistical Tests
 

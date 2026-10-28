@@ -1,0 +1,5 @@
+tag,neuron_id,kind,amp,centroid_x
+U1 anterior,11471,up,738.71511,1043.22
+U2 posterior,11925,up,1046.99694,1010.39
+D1 anterior,2728,down,-71.66182,1344.24
+D2 posterior,14795,down,-71.81888,960.93

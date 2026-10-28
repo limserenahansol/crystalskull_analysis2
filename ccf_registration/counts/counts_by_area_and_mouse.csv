@@ -1,0 +1,174 @@
+condition,area_group,mouse,n_cells,n_excited,n_inhibited,n_nonsig,pct_excited,pct_inhibited
+Face poke,VIS,m201,7977,415,2784,4778,5.20,34.90
+Face poke,MO,m201,7677,845,2176,4656,11.01,28.34
+Face poke,SSp,m201,6093,377,1641,4075,6.19,26.93
+Face poke,VIS,m1,4867,416,1423,3028,8.55,29.24
+Face poke,SSp,m1,2432,227,482,1723,9.33,19.82
+Face poke,VIS,m200,2300,197,504,1599,8.57,21.91
+Face poke,RSP,m201,1890,112,560,1218,5.93,29.63
+Face poke,VIS,m3,1793,189,618,986,10.54,34.47
+Face poke,MO,m1,1763,213,330,1220,12.08,18.72
+Face poke,MO,m200,1275,141,230,904,11.06,18.04
+Face poke,RSP,m200,1047,113,182,752,10.79,17.38
+Face poke,SSp,m3,997,147,234,616,14.74,23.47
+Face poke,SSp,m200,910,86,152,672,9.45,16.70
+Face poke,MO,m3,663,110,188,365,16.59,28.36
+Face poke,RSP,m1,415,6,117,292,1.45,28.19
+Face poke,SSs,m201,212,23,60,129,10.85,28.30
+Face poke,AUD,m201,148,10,43,95,6.76,29.05
+Face poke,RSP,m3,127,3,53,71,2.36,41.73
+Face poke,SSs,m1,119,24,25,70,20.17,21.01
+Face poke,SSs,m3,67,23,8,36,34.33,11.94
+Face poke,AUD,m1,52,4,9,39,7.69,17.31
+Face poke,SCzo,m200,40,8,8,24,20.00,20.00
+Face poke,SCzo,m201,37,7,10,20,18.92,27.03
+Face poke,ICe,m200,31,2,6,23,6.45,19.35
+Face poke,TEa,m1,26,3,8,15,11.54,30.77
+Face poke,AUD,m3,24,1,7,16,4.17,29.17
+Face poke,SSs,m200,24,3,1,20,12.50,4.17
+Face poke,MB,m200,12,0,5,7,0.00,41.67
+Face poke,MB,m1,10,2,3,5,20.00,30.00
+Face poke,AUD,m200,9,1,2,6,11.11,22.22
+Face poke,bic,m200,9,0,4,5,0.00,44.44
+Face poke,bic,m1,8,0,3,5,0.00,37.50
+Face poke,TEa,m201,7,0,0,7,0.00,0.00
+Face poke,ENTm,m201,6,0,1,5,0.00,16.67
+Face poke,SIM,m200,6,0,3,3,0.00,50.00
+Face poke,OLF,m201,4,0,1,3,0.00,25.00
+Face poke,TEa,m3,4,0,1,3,0.00,25.00
+Face poke,ICe,m1,3,0,2,1,0.00,66.67
+Face poke,MB,m201,3,0,2,1,0.00,66.67
+Face poke,MB,m3,3,1,1,1,33.33,33.33
+Face poke,MOB,m201,2,0,0,2,0.00,0.00
+Face poke,TEa,m200,2,0,1,1,0.00,50.00
+Face poke,SIM,m1,1,0,1,0,0.00,100.00
+Face poke,SCzo,m1,1,0,0,1,0.00,0.00
+Face poke,SIM,m201,1,0,1,0,0.00,100.00
+Face poke,FRP,m201,1,0,0,1,0.00,0.00
+Face poke,ACAd,m201,1,0,0,1,0.00,0.00
+Face poke,bic,m3,1,0,0,1,0.00,0.00
+Face poke,onl,m3,1,0,0,1,0.00,0.00
+Face poke,OLF,m200,1,0,1,0,0.00,100.00
+Face poke,ACAd,m200,1,1,0,0,100.00,0.00
+Face poke,DEC,m201,1,0,1,0,0.00,100.00
+Face poke,onl,m201,1,0,0,1,0.00,0.00
+Melittin,VIS,CS1014-1b,9250,2926,5432,892,31.63,58.72
+Melittin,VIS,CS1014-2w,8791,2279,5486,1026,25.92,62.40
+Melittin,VIS,CS0204-1b,8234,2976,4257,1001,36.14,51.70
+Melittin,SSp,CS1014-1b,7867,1886,5538,443,23.97,70.40
+Melittin,SSp,CS1014-2w,6660,2174,3854,632,32.64,57.87
+Melittin,MO,CS1014-1b,6477,2650,3340,487,40.91,51.57
+Melittin,MO,CS1014-2w,5278,1989,2651,638,37.68,50.23
+Melittin,SSp,CS0204-1b,5206,961,3985,260,18.46,76.55
+Melittin,RSP,CS0204-1b,3503,768,2484,251,21.92,70.91
+Melittin,VIS,CS0204-2w,2916,616,2110,190,21.12,72.36
+Melittin,MO,CS0204-1b,2902,1247,1428,227,42.97,49.21
+Melittin,RSP,CS1014-2w,2869,778,1743,348,27.12,60.75
+Melittin,RSP,CS1014-1b,1878,245,1517,116,13.05,80.78
+Melittin,MO,CS0204-2w,1509,461,975,73,30.55,64.61
+Melittin,RSP,CS0204-2w,1237,198,955,84,16.01,77.20
+Melittin,SSp,CS0204-2w,1220,221,941,58,18.11,77.13
+Melittin,AUD,CS1014-1b,984,157,741,86,15.96,75.30
+Melittin,SSs,CS1014-1b,712,160,496,56,22.47,69.66
+Melittin,SSs,CS1014-2w,690,84,544,62,12.17,78.84
+Melittin,AUD,CS1014-2w,457,24,405,28,5.25,88.62
+Melittin,TEa,CS1014-1b,407,32,344,31,7.86,84.52
+Melittin,SCzo,CS0204-1b,171,25,128,18,14.62,74.85
+Melittin,SCzo,CS1014-2w,149,12,128,9,8.05,85.91
+Melittin,SIM,CS1014-1b,140,30,91,19,21.43,65.00
+Melittin,SCzo,CS1014-1b,108,1,105,2,0.93,97.22
+Melittin,SCzo,CS0204-2w,107,11,86,10,10.28,80.37
+Melittin,TEa,CS1014-2w,94,0,92,2,0.00,97.87
+Melittin,MB,CS1014-1b,74,5,63,6,6.76,85.14
+Melittin,AUD,CS0204-2w,69,0,63,6,0.00,91.30
+Melittin,ICe,CS1014-1b,63,2,58,3,3.17,92.06
+Melittin,MOB,CS1014-1b,54,11,38,5,20.37,70.37
+Melittin,MB,CS0204-2w,54,9,39,6,16.67,72.22
+Melittin,ACAd,CS1014-2w,51,21,21,9,41.18,41.18
+Melittin,TEa,CS0204-2w,51,2,44,5,3.92,86.27
+Melittin,OLF,CS1014-1b,43,11,26,6,25.58,60.47
+Melittin,ENTl,CS1014-1b,38,0,37,1,0.00,97.37
+Melittin,SSs,CS0204-2w,34,0,33,1,0.00,97.06
+Melittin,FRP,CS1014-1b,32,11,18,3,34.38,56.25
+Melittin,bic,CS1014-1b,31,5,24,2,16.13,77.42
+Melittin,MB,CS0204-1b,30,0,28,2,0.00,93.33
+Melittin,ICe,CS0204-2w,27,0,26,1,0.00,96.30
+Melittin,ICe,CS0204-1b,26,1,25,0,3.85,96.15
+Melittin,PL,CS1014-2w,18,0,18,0,0.00,100.00
+Melittin,MOB,CS0204-1b,17,0,16,1,0.00,94.12
+Melittin,OLF,CS1014-2w,12,0,12,0,0.00,100.00
+Melittin,SIM,CS0204-2w,12,0,12,0,0.00,100.00
+Melittin,SSs,CS0204-1b,11,0,11,0,0.00,100.00
+Melittin,PL,CS1014-1b,9,3,5,1,33.33,55.56
+Melittin,OLF,CS0204-1b,8,0,8,0,0.00,100.00
+Melittin,SIM,CS1014-2w,7,0,7,0,0.00,100.00
+Melittin,ENTm,CS1014-1b,6,0,6,0,0.00,100.00
+Melittin,FRP,CS1014-2w,6,0,6,0,0.00,100.00
+Melittin,bic,CS0204-2w,6,0,5,1,0.00,83.33
+Melittin,root,CS1014-1b,5,0,5,0,0.00,100.00
+Melittin,MOB,CS0204-2w,5,0,5,0,0.00,100.00
+Melittin,ENTm,CS1014-2w,4,0,4,0,0.00,100.00
+Melittin,VISC,CS1014-2w,4,0,4,0,0.00,100.00
+Melittin,FRP,CS0204-1b,4,0,4,0,0.00,100.00
+Melittin,AUD,CS0204-1b,4,0,4,0,0.00,100.00
+Melittin,ICd,CS1014-1b,3,0,3,0,0.00,100.00
+Melittin,VISC,CS1014-1b,3,0,3,0,0.00,100.00
+Melittin,ENTl,CS1014-2w,3,0,3,0,0.00,100.00
+Melittin,MOB,CS1014-2w,3,0,3,0,0.00,100.00
+Melittin,root,CS1014-2w,3,0,2,1,0.00,66.67
+Melittin,FRP,CS0204-2w,3,0,3,0,0.00,100.00
+Melittin,ACAd,CS1014-1b,2,1,1,0,50.00,50.00
+Melittin,PAR,CS1014-2w,2,0,2,0,0.00,100.00
+Melittin,"CUL4, 5",CS0204-1b,2,0,2,0,0.00,100.00
+Melittin,OLF,CS0204-2w,2,0,2,0,0.00,100.00
+Melittin,ICe,CS1014-2w,1,0,0,1,0.00,0.00
+Melittin,MB,CS1014-2w,1,0,1,0,0.00,100.00
+Melittin,"CUL4, 5",CS1014-2w,1,0,1,0,0.00,100.00
+Melittin,TEa,CS0204-1b,1,0,1,0,0.00,100.00
+Melittin,ACAd,CS0204-1b,1,0,0,1,0.00,0.00
+Melittin,ACAd,CS0204-2w,1,0,1,0,0.00,100.00
+Melittin,ENTl,CS0204-2w,1,0,1,0,0.00,100.00
+Melittin+morphine,VIS,1014m02w,11613,3731,6651,1231,32.13,57.27
+Melittin+morphine,VIS,1014m01b,10102,3493,5929,680,34.58,58.69
+Melittin+morphine,SSp,1014m01b,8372,2119,5888,365,25.31,70.33
+Melittin+morphine,SSp,1014m02w,7615,2028,5043,544,26.63,66.22
+Melittin+morphine,MO,1014m01b,6922,2962,3498,462,42.79,50.53
+Melittin+morphine,MO,1014m02w,5969,2533,2779,657,42.44,46.56
+Melittin+morphine,RSP,1014m02w,3585,1198,1933,454,33.42,53.92
+Melittin+morphine,RSP,1014m01b,1952,447,1347,158,22.90,69.01
+Melittin+morphine,AUD,1014m01b,1148,225,852,71,19.60,74.22
+Melittin+morphine,SSs,1014m02w,879,180,636,63,20.48,72.35
+Melittin+morphine,SSs,1014m01b,819,184,588,47,22.47,71.79
+Melittin+morphine,AUD,1014m02w,687,74,574,39,10.77,83.55
+Melittin+morphine,TEa,1014m01b,355,78,244,33,21.97,68.73
+Melittin+morphine,SIM,1014m01b,304,96,183,25,31.58,60.20
+Melittin+morphine,TEa,1014m02w,219,11,201,7,5.02,91.78
+Melittin+morphine,SCzo,1014m01b,156,8,143,5,5.13,91.67
+Melittin+morphine,SCzo,1014m02w,121,40,64,17,33.06,52.89
+Melittin+morphine,ICe,1014m01b,108,18,79,11,16.67,73.15
+Melittin+morphine,MB,1014m01b,107,15,74,18,14.02,69.16
+Melittin+morphine,bic,1014m01b,53,17,31,5,32.08,58.49
+Melittin+morphine,FRP,1014m01b,43,15,19,9,34.88,44.19
+Melittin+morphine,MOB,1014m01b,42,7,29,6,16.67,69.05
+Melittin+morphine,ENTl,1014m01b,36,3,30,3,8.33,83.33
+Melittin+morphine,OLF,1014m01b,33,9,15,9,27.27,45.45
+Melittin+morphine,SIM,1014m02w,23,2,20,1,8.70,86.96
+Melittin+morphine,ENTm,1014m01b,18,0,17,1,0.00,94.44
+Melittin+morphine,MB,1014m02w,18,6,9,3,33.33,50.00
+Melittin+morphine,PL,1014m02w,15,0,13,2,0.00,86.67
+Melittin+morphine,PL,1014m01b,13,3,7,3,23.08,53.85
+Melittin+morphine,ACAd,1014m01b,12,5,6,1,41.67,50.00
+Melittin+morphine,root,1014m01b,9,2,7,0,22.22,77.78
+Melittin+morphine,ICe,1014m02w,9,1,7,1,11.11,77.78
+Melittin+morphine,VISC,1014m02w,9,0,9,0,0.00,100.00
+Melittin+morphine,FRP,1014m02w,6,0,6,0,0.00,100.00
+Melittin+morphine,VISC,1014m01b,4,1,3,0,25.00,75.00
+Melittin+morphine,ECT1,1014m01b,3,0,3,0,0.00,100.00
+Melittin+morphine,ICd,1014m01b,2,0,1,1,0.00,50.00
+Melittin+morphine,PFL,1014m01b,2,0,2,0,0.00,100.00
+Melittin+morphine,PAR,1014m02w,2,0,2,0,0.00,100.00
+Melittin+morphine,DEC,1014m02w,2,0,2,0,0.00,100.00
+Melittin+morphine,PAR,1014m01b,1,0,1,0,0.00,100.00
+Melittin+morphine,ENTl,1014m02w,1,0,1,0,0.00,100.00
+Melittin+morphine,bic,1014m02w,1,0,1,0,0.00,100.00
+Melittin+morphine,ACAd,1014m02w,1,0,1,0,0.00,100.00
